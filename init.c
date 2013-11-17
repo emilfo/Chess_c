@@ -8,11 +8,11 @@ U64 SetMask[64];
 U64 ClearMask[64];
 
 //used to make a random number used for the hashkey'ing
-#define RAND_64 (	(U64)rand() + \
-					(U64)rand() << 15 + \
-					(U64)rand() << 30 + \
-					(U64)rand() << 45 + \
-					((U64)rand() & 0xf) << 60    )
+#define RAND_64 (	(U64)rand() | \
+					(U64)rand() << 15 | \
+					(U64)rand() << 30 | \
+					(U64)rand() << 45 | \
+					((U64)rand() & 0xf) << 60)
 					
 
 int Sq120ToSq64[BRD_SQ_NUM];

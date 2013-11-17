@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include "defs.h"
 
-int parse_FEN(char *fen, S_BOARD *pos) {
+int parseFEN(char *fen, S_BOARD *pos) {
 	ASSERT(fen != NULL);
 	ASSERT(pos != NULL);
 
@@ -65,6 +65,9 @@ int parse_FEN(char *fen, S_BOARD *pos) {
             }
 			file++;
         }
+
+        printf("\nFEN: %c", *fen);
+        printBoard(pos);
 		fen++;
 	}
 
@@ -152,3 +155,37 @@ void ResetBoard (S_BOARD *pos) {
 	pos->posKey = 0ULL;
 }
 
+void printBoard (const S_BOARD *pos) {
+	int sq = 0;
+	int file = 0;
+	int rank = 0;
+	int piece = 0;
+
+	printf("\nBoard:\n\n");
+
+	for(rank = RANK_8; rank >= RANK_1; rank--) {
+		printf("%d ", rank+1);
+		for(file = FILE_A; file <= FILE_H; file++) {
+			sq = FRtoSQ(file, rank);
+			piece = pos->pieces[sq];
+			printf("%2d", pceChar[piece]);
+		}
+		printf("\n");
+	}
+
+	printf("\n  ");
+	for(file = FILE_A; file <= FILE_H; file++) {
+		printf("%2c", 'A'+file);
+	}
+
+	printf("\nside: %c", SideChar[pos->side]);
+	printf("\nenPassant-Square: %d", pos->enPassantSQ);
+
+	printf("\ncastle:%c%c%c%c\n",
+			pos->castlePerm & WKCA ? 'K' : '-',
+			pos->castlePerm & WQCA ? 'Q' : '-',
+			pos->castlePerm & BKCA ? 'k' : '-',
+			pos->castlePerm & BQCA ? 'q' : '-');
+
+	printf("posKey: %11X\n", pos ->posKey);
+}

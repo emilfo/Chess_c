@@ -111,6 +111,10 @@ extern U64 ClearMask[64];
 extern U64 PieceKeys[13][120];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
+extern char PceChar[];
+extern char SideChar[];
+extern char RankChar[];
+extern char FileChar[];
 
 /* FUNCTIONS */
 
@@ -124,6 +128,8 @@ extern int CountBits(U64 b);
 
 //board.c
 extern void ResetBoard(S_BOARD *pos);
+extern int parseFEN(char *fen, S_BOARD *pos);
+extern void printBoard (const S_BOARD *pos);
 
 //hashkey.c
 U64 GeneratePosKey(const S_BOARD *pos);
