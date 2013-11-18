@@ -65,9 +65,6 @@ int parseFEN(char *fen, S_BOARD *pos) {
             }
 			file++;
         }
-
-        printf("\nFEN: %c", *fen);
-        printBoard(pos);
 		fen++;
 	}
 
@@ -168,7 +165,7 @@ void printBoard (const S_BOARD *pos) {
 		for(file = FILE_A; file <= FILE_H; file++) {
 			sq = FRtoSQ(file, rank);
 			piece = pos->pieces[sq];
-			printf("%2d", pceChar[piece]);
+			printf("%2c", PceChar[piece]);
 		}
 		printf("\n");
 	}

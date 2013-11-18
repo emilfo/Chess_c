@@ -94,7 +94,7 @@ typedef struct
 
 /* MACROS */
 
-#define FRtoSQ(file,rank) ( ( 21+(file) )+( 10+(rank) ) )
+#define FRtoSQ(file,rank) ( ( 21+(file) )+( 10*(rank) ) )
 #define POP(b) PopBit(b)
 #define CNT(b) CountBits(b)
 #define SQ64(sq120) (SQ120toSQ64[(sq120)])
