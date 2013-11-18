@@ -1,6 +1,40 @@
 #include "stdio.h"
 #include "defs.h"
 
+void UpdateListsMaterial (S_BOARD *pos) {
+	int piece;
+	int sq;
+	int color;
+
+	
+
+	for(sq = 0; sq < BRD_SQ_NUM; sq++) {
+		piece = pos->pieces[sq];
+
+		if(piece != OFFBOARD && piece != EMPTY) {
+			color = PieceColor[piece];
+			if(PieceMaj[piece]) {
+				pos->majPce[color]++;
+				pos->bigPce[color]++;
+			}
+			else if(PieceMin[piece]) {
+				pos->minPce[color]++;
+				pos->bigPce[color]++;
+			}
+			else if(piece == wK) pos->kingSQ[WHITE] = sq;
+			else if(piece == bK) pos->kingSQ[BLACK] = sq;
+
+			//adding the pieceavalue to color
+			pos->material[color] += PieceVal[piece];
+			//adding the piece to the piecelist
+			pos->pList[piece][ pos->pceNum[piece]++ ]; 
+			//pceNum is the number of the same pieces already added
+
+
+		}
+	}
+}
+
 int parseFEN(char *fen, S_BOARD *pos) {
 	ASSERT(fen != NULL);
 	ASSERT(pos != NULL);
