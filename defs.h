@@ -109,7 +109,7 @@ extern int SQ120toSQ64[BRD_SQ_NUM];
 extern int SQ64toSQ120[64];
 extern U64 SetMask[64];
 extern U64 ClearMask[64];
-extern U64 PieceKeys[13][120];
+extern U64 PieceKeys[13][BRD_SQ_NUM];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
 extern char PceChar[];
@@ -122,6 +122,9 @@ extern int PieceMaj[13];
 extern int PieceMin[13];
 extern int PieceColor[13];
 extern int PieceVal[13];
+
+extern int GetRank[BRD_SQ_NUM];
+extern int GetFile[BRD_SQ_NUM];
 
 /* FUNCTIONS */
 

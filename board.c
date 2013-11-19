@@ -21,8 +21,13 @@ void UpdateListsMaterial (S_BOARD *pos) {
 				pos->minPce[color]++;
 				pos->bigPce[color]++;
 			}
-			else if(piece == wK) pos->kingSQ[WHITE] = sq;
-			else if(piece == bK) pos->kingSQ[BLACK] = sq;
+			else if(piece == wK || piece == bK) {
+				 pos->kingSQ[color] = sq;
+			}
+			else if(piece = wP || piece == bP) {
+				SETBIT(pos->pawns[color], SQ64(sq));
+				SETBIT(pos->pawns[BOTH], SQ64(sq));
+			}
 
 			//adding the pieceavalue to color
 			pos->material[color] += PieceVal[piece];
@@ -134,6 +139,8 @@ int parseFEN(char *fen, S_BOARD *pos) {
 	}
 
 	pos->posKey = GeneratePosKey(pos);
+
+	UpdateListsMaterial(pos);
 	return 0;
 }
 

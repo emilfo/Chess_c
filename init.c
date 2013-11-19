@@ -3,9 +3,15 @@
 
 int SQ120toSQ64[BRD_SQ_NUM];
 int SQ64toSQ120[64];
+int GetFile[BRD_SQ_NUM];
+int GetRank[BRD_SQ_NUM];
 
 U64 SetMask[64];
 U64 ClearMask[64];
+
+U64 PieceKeys[13][120];
+U64 SideKey;
+U64 CastleKeys[16];
 
 //used to make a random number used for the hashkey'ing
 #define RAND_64 (	(U64)rand() | \
@@ -15,16 +21,26 @@ U64 ClearMask[64];
 					((U64)rand() & 0xf) << 60)
 					
 
-int Sq120ToSq64[BRD_SQ_NUM];
-int Sq64ToSq120[64];
 
-U64 SetMask[64];
-U64 ClearMask[64];
 
-U64 PieceKeys[13][120];
-U64 SideKey;
-U64 CastleKeys[16];
+void InitGetFileRank() {
+	int rank;
+	int file;
+	int sq;
 
+	for (sq = 0; sq<BRD_SQ_NUM; sq++) {
+		GetFile[sq] = OFFBOARD;
+		GetRank[sq] = OFFBOARD;
+	}
+
+	for (rank = RANK_1; rank <=RANK_8; rank++) {
+		for (file = FILE_A; file <= FILE_H; file++) {
+			sq = FRtoSQ(file,rank);
+			GetFile[sq] = file;
+			GetRank[sq] = rank;
+		}
+	}
+}
 void InitHashKeys() {
 	
 	int index = 0;
@@ -87,6 +103,7 @@ void AllInit () {
 	InitSQ120toSQ64();
 	initBitMask();
 	InitHashKeys();
+	InitGetFileRank();
 
 }
 
