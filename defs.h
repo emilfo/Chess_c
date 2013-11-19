@@ -104,6 +104,11 @@ typedef struct
 #define CLRBIT(bb,sq) ((bb) &= ClearMsk[(sq)])
 #define SETBIT(bb,sq) ((bb) |= SetMask[(sq)])
 
+#define IsBQ(p) (PieceBishopQueen[(p)])
+#define IsRQ(p) (PieceRookQueen[(p)])
+#define IsKn(p) (PieceKnight[(p)])
+#define IsKi(p) (PieceKing[(p)])
+
 /* GLOBALS */
 
 extern int SQ120toSQ64[BRD_SQ_NUM];
@@ -127,6 +132,12 @@ extern int PieceVal[13];
 extern int GetRank[BRD_SQ_NUM];
 extern int GetFile[BRD_SQ_NUM];
 
+extern int PieceKnight[13];
+extern int PieceKing[13];
+extern int PieceRookQueen[13];
+extern int PieceBishopQueen[13];
+
+
 /* FUNCTIONS */
 
 //init.c
@@ -146,5 +157,8 @@ extern int checkBoard(const S_BOARD *pos);
 
 //hashkey.c
 U64 GeneratePosKey(const S_BOARD *pos);
+
+//attack.c
+extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
 
 #endif
