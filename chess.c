@@ -19,10 +19,5 @@ int main () {
 	printBitBoard(board->pawns[BLACK]);
 	printBitBoard(board->pawns[BOTH]);
 
-
-	printf("\n%d - %d", SQ64(21), 21);
-	printf("\n%d - %d", SQ64(63), 63);
-
-
 	return 0;
 }

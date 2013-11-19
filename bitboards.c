@@ -31,10 +31,10 @@ void printBitBoard (U64 bb) {
 
 	printf("\n");
 	//printing bitboard starting backwards, so to make white at bottom
-	for(rank = RANK_8; rank >= RANK_1; rank--) {
-		for(file = FILE_A; file <= FILE_H; file ++) {
+	for(rank = RANK_8; rank >= RANK_1; --rank) {
+		for(file = FILE_A; file <= FILE_H; ++file) {
 			sq = FRtoSQ(file,rank);
-			sq64 = SQ64toSQ120[sq];
+			sq64 = SQ64(sq);
 
 			if((shiftMe << sq64) & bb)
 				printf("X");
@@ -44,5 +44,6 @@ void printBitBoard (U64 bb) {
 		}
 		printf("\n");
 	}
+
 	printf("\n\n");
 }
