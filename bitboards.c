@@ -22,7 +22,7 @@ int CountBits(U64 b) {
 }
 
 void printBitBoard (U64 bb) {
-	U64 shiftMe = 1ULL;
+	U64 shiftMe = ONE64;
 
 	int rank = 0;
 	int file = 0;

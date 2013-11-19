@@ -57,17 +57,17 @@ void InitHashKeys() {
 
 }
 
-void initBitMask() {
+void InitBitMask() {
 	int i = 0;
 
-	//init value of 0ULL
+	//init value of ZERO64
 	for(i = 0; i < 64; i++) {
-		SetMask[i] = 0ULL;
-		ClearMask[i] = 0ULL;
+		SetMask[i] = ZERO64;
+		ClearMask[i] = ZERO64;
 	}
 
 	for(i = 0; i < 64; i++) {
-		SetMask[i] |= (1ULL << i);
+		SetMask[i] |= (ONE64 << i);
 		ClearMask[i] = ~SetMask[i];
 	}
 
@@ -101,7 +101,7 @@ void InitSQ120toSQ64 () {
 
 void AllInit () {
 	InitSQ120toSQ64();
-	initBitMask();
+	InitBitMask();
 	InitHashKeys();
 	InitGetFileRank();
 

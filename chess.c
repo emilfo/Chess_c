@@ -12,12 +12,12 @@ int main () {
 	S_BOARD board[1];
 
 	parseFEN(FEN4, board);
-	
-	printBoard(board);
-	
-	printBitBoard(board->pawns[WHITE]);
-	printBitBoard(board->pawns[BLACK]);
-	printBitBoard(board->pawns[BOTH]);
+	//asserting that all the pieces are correct
+	ASSERT(checkBoard(board));
+
+ 	//force assert error
+	board->posKey ^=SideKey;
+	ASSERT(checkBoard(board));
 
 	return 0;
 }

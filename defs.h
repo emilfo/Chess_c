@@ -1,6 +1,7 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#include "stdint.h"
 #include "stdlib.h"
 
 #define DEBUG
@@ -11,18 +12,18 @@
 # define ASSERT(n) \
 if(!(n)) { \
 printf("%s - Failed ", #n); \
-printf("On %s ", __DATE__); \
-printf("At %s " __TIME__); \
 printf("In File %s ", __FILE__); \
 printf("At Line %d \n", __LINE__); \
 exit(1); }
 #endif
 
-typedef unsigned long long U64;
+typedef uint64_t U64;
 
 #define NAME  "ELOmif 0.1"
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
+#define ZERO64 UINT64_C(0)
+#define ONE64 UINT64_C(1)
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -137,10 +138,11 @@ extern int PopBit(U64 *bb);
 extern int CountBits(U64 b);
 
 //board.c
-extern void ResetBoard(S_BOARD *pos);
+extern void resetBoard(S_BOARD *pos);
 extern int parseFEN(char *fen, S_BOARD *pos);
 extern void printBoard (const S_BOARD *pos);
 extern void UpdateListsMaterial (S_BOARD *pos);
+extern int checkBoard(const S_BOARD *pos);
 
 //hashkey.c
 U64 GeneratePosKey(const S_BOARD *pos);
