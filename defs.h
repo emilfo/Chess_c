@@ -50,7 +50,7 @@ enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 typedef struct {
 	int move;
 	int score;
-}S_MOVE
+}S_MOVE;
 
 typedef struct 
 {
@@ -108,8 +108,8 @@ typedef struct
 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece >> 20, 0xF
 0001 0000 0000 0000 0000 0000 0000 -> Castle 0x1000000
 */
-#define FROM(m) ((m) & 0x3F)
-#define TO(m) (((m) >> 7) & 0x3F)
+#define FROM(m) ((m) & 0x7F)
+#define TO(m) (((m) >> 7) & 0x7F)
 #define CAPTURED(m) (((m) >> 14) & 0xF)
 #define PROMOTED(m) (((m) >> 20) & 0xF)
 
@@ -165,6 +165,7 @@ extern int PieceRookQueen[13];
 extern int PieceBishopQueen[13];
 
 
+
 /* FUNCTIONS */
 
 //init.c
@@ -187,5 +188,9 @@ U64 GeneratePosKey(const S_BOARD *pos);
 
 //attack.c
 extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
+
+//io.c
+extern char *printSquare(const int sq);
+extern char *printMove(const int move);
 
 #endif

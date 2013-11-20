@@ -16,8 +16,21 @@ int main () {
 	ASSERT(checkBoard(board));
 
  	//force assert error
-	board->posKey ^=SideKey;
-	ASSERT(checkBoard(board));
+	//board->posKey ^=SideKey;
+	//ASSERT(checkBoard(board));
+
+	int move = 0;
+
+	int from = A2;
+	int to = A4;
+	int cap = wR;
+	int prom = bQ;
+
+	move = ( (from) | (to<<7) | (cap << 14) | (prom << 20) );
+
+	printf("%s\n", printSquare(from));
+	printf("%s\n", printSquare(to));
+	printf("%s", printMove(move));
 
 	return 0;
 }
