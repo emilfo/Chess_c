@@ -35,7 +35,7 @@ char *printMove(const int move) {
 			promotedChar = 'r';
 
 		else 
-			promotedChar = 'k';
+			promotedChar = 'n';
 
 
 		sprintf(MoveStr, "%c%c%c%c%c", ('a'+fileFrom), ('1'+rankFrom), ('a'+fileTo), ('1'+rankTo), promotedChar );
