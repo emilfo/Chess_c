@@ -170,6 +170,7 @@ extern int PieceKnight[13];
 extern int PieceKing[13];
 extern int PieceRookQueen[13];
 extern int PieceBishopQueen[13];
+extern int PieceSlides[13];
 
 
 
