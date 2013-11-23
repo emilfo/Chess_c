@@ -263,3 +263,78 @@ int MakeMove(S_BOARD *pos, int move) {
 
 	return TRUE;
 }
+
+void TakeMove(S_BOARD *pos) {
+
+	ASSERT(CheckBoard(pos));
+
+	pos->hisPly--;
+	pos->ply--;
+
+	int move = pos->history[pos->hisPly].move;
+	int from = FROM(move);
+	int to = TO(move);
+
+	ASSERT(SqOnBoard(from));
+	ASSERT(SqOnBoard(to));
+
+	if(pos->enPassantSQ != NO_SQ) HASH_EP;
+	HASH_CA;
+
+	pos->fiftyMove = pos->history[pos->hisPly].fiftyMove;
+    pos->enPassantSQ = pos->history[pos->hisPly].enPassantSQ;
+    pos->castlePerm = pos->history[pos->hisPly].castlePerm;
+
+    if(pos->enPassantSQ != NO_SQ) HASH_EP;
+    HASH_CA;
+
+    pos->side ^= 1;
+    HASH_SIDE;
+
+    //if enpassant capture add in the pieces
+    if(move & MFLAGEP) {
+		if(pos->side == WHITE) AddPiece(to-10, pos, bP);
+		else AddPiece(to+10, pos, wP);
+	}
+
+	//if castling move move the rook back in position
+	else if(move & MFLAGCA) {
+		switch (to) {
+			case C1:
+				MovePiece(D1, A1, pos); break;
+			case C8:
+				MovePiece(D8, A8, pos); break;
+			case G1:
+				MovePiece(F1, H1, pos); break;
+			case G8:
+				MovePiece(F8, H8, pos);break;
+
+			default: ASSERT(FALSE); break;
+
+		}
+	}
+	//redo move before checking for capture
+	MovePiece(to, from, pos);
+
+	//update kingsq
+	if(PieceKing[pos->pieces[from]]) {
+		pos->kingSQ[pos->side] = from;
+	}
+
+	int captured = CAPTURED(move);
+
+	if(captured != EMPTY) {
+		ASSERT(PieceValid(captured));
+		AddPiece(to, pos, captured);
+	}
+
+	int prPiece = PROMOTED(move);
+	if(prPiece != EMPTY) {
+		ASSERT(pieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKint[prPiece]);
+		ClearPiece(from, pos);
+		AddPiece(from, pos, (PieceColor[prPiece] == WHITE ? wP : bP));
+	}
+
+	ASSERT(CheckBoard(pos));
+
+}
