@@ -139,7 +139,7 @@ static void MovePiece(const int from, const int to, S_BOARD *pos) {
 
 	for(i = 0; i < pos->pceNum[piece]; i++) {
 		if(pos->pList[piece][i] == from) {
-			pos->pList[piece][index] = to;
+			pos->pList[piece][i] = to;
 #ifdef DEBUG
 			targetPceNum = TRUE;
 #endif
@@ -149,3 +149,4 @@ static void MovePiece(const int from, const int to, S_BOARD *pos) {
 
 	ASSERT(targetPceNum);
 }
+
