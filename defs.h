@@ -135,7 +135,7 @@ typedef struct
 #define CNT(b) CountBits(b)
 #define SQ64(sq120) (SQ120toSQ64[(sq120)])
 #define SQ120(sq64) (SQ64toSQ120[(sq64)])
-#define CLRBIT(bb,sq) ((bb) &= ClearMsk[(sq)])
+#define CLRBIT(bb,sq) ((bb) &= ClearMask[(sq)])
 #define SETBIT(bb,sq) ((bb) |= SetMask[(sq)])
 
 #define IsBQ(p) (PieceBishopQueen[(p)])

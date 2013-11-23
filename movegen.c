@@ -121,8 +121,8 @@ void GenerateAllMoves( const S_BOARD *pos, S_MOVELIST *list) {
 	int tmpSq = 0;
 	int pieceNum = 0;
 
-	int dir = 0;
-	int i = 0;
+	int dir = 0
+;	int i = 0;
 	int pieceIndex = 0;
 
 	if(side == WHITE) {
