@@ -258,6 +258,7 @@ int MakeMove(S_BOARD *pos, int move) {
 
 	//checks if the side that moved had their king in check, in that case illegal move
 	if(SqAttacked(pos->kingSQ[side], pos->side, pos)) {
+		TakeMove();
 		return FALSE;
 	}
 

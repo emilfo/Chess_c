@@ -209,4 +209,8 @@ extern int FileRankValid(const int fr);
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
+//makemove.c
+extern int MakeMove(S_BOARD *pos, int move);
+extern void TakeMove(S_BOARD *pos);
+
 #endif
