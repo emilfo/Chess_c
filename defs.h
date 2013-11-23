@@ -63,7 +63,7 @@ typedef struct
 {
 	int move;
 	int castlePerm;
-	int enPasssantSQ;
+	int enPassantSQ;
 	int fiftyMove;
 	U64 posKey;
 
@@ -166,6 +166,7 @@ extern int PieceVal[13];
 extern int GetRank[BRD_SQ_NUM];
 extern int GetFile[BRD_SQ_NUM];
 
+extern int PiecePawn[13];
 extern int PieceKnight[13];
 extern int PieceKing[13];
 extern int PieceRookQueen[13];

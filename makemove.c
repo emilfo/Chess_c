@@ -73,7 +73,7 @@ static void ClearPiece(const int sq, S_BOARD *pos) {
 }
 
 
-static void addPiece(const int sq, S_BOARD *pos, const int piece) {
+static void AddPiece(const int sq, S_BOARD *pos, const int piece) {
 	ASSERT(pieceValid(piece))
 	ASSERT(SqOnBoard(sq));
 
@@ -150,3 +150,116 @@ static void MovePiece(const int from, const int to, S_BOARD *pos) {
 	ASSERT(targetPceNum);
 }
 
+int MakeMove(S_BOARD *pos, int move) {
+
+	ASSERT(CheckBoard(pos));
+
+	//bitshifts the move to get its values as set up in the macros INT MOVE
+	int from = FROM(move);
+	int to = TO(move);
+	int side = pos->side;
+
+	ASSERT(SqOnBoard(from));
+	ASSERT(SqOnBoard(to));
+	ASSERT(SideValid(side));
+	ASSERT(PieceValid(pos->pieces[from]));
+
+	//Stores current the poskey in history 
+	pos->history[pos->hisPly].posKey = pos->posKey;
+
+	//check enpassant move
+	if(move & MFLAGEP) {
+		if(side == WHITE) ClearPiece(to-10,pos);
+		else ClearPiece(to+10,pos);
+	}
+	//check castling move
+	else if(move & MFLAGCA) {
+		switch (to) {
+			case C1:
+				MovePiece(A1, D1, pos); break;
+			case C8:
+				MovePiece(A8, D8, pos); break;
+			case G1:
+				MovePiece(H1, F1, pos); break;
+			case G8:
+				MovePiece(H8, F8, pos);break;
+
+			default: ASSERT(FALSE); break;
+
+		}
+	}
+	//removes the previous enPassantSQ from posKey
+	if(pos->enPassantSQ != NO_SQ) HASH_EP;
+	//hash out the current castling state from posKey
+	HASH_CA;
+
+	pos->history[pos->hisPly].move = move;
+    pos->history[pos->hisPly].fiftyMove = pos->fiftyMove;
+    pos->history[pos->hisPly].enPassantSQ = pos->enPassantSQ;
+    pos->history[pos->hisPly].castlePerm = pos->castlePerm;
+
+    pos->castlePerm &= CastlePerm[from];
+    pos->castlePerm &= CastlePerm[to];
+    pos->enPassantSQ = NO_SQ;
+
+    //hash in the new castling state to posKey
+	HASH_CA;
+
+	pos->fiftyMove++;
+
+	int captured = CAPTURED(move);
+
+	if(captured != EMPTY) {
+		ASSERT(PieceValid(captured));
+		ClearPiece(to, pos);
+		pos->fiftyMove = 0;
+	}
+
+	pos->ply++;
+	pos->hisPly++;
+
+	if(PiecePawn[pos->pieces[from]]) {
+		pos->fiftyMove = 0;
+
+		//if double pawnmove
+		if(move & MFLAGPS) {
+
+			if(side == WHITE) {
+				pos->enPassantSQ = from + 10;
+				ASSERT(getRank[pos->enPassantSQ == RANK_3]);
+			} else {
+				pos->enPassantSQ = from - 10;
+				ASSERT(getRank[pos->enPassantSQ == RANK_6]);
+			}
+			HASH_EP;
+		}
+	}
+
+	MovePiece(from, to, pos);
+
+	//checks after promoted pawn-move
+	int prPiece = PROMOTED(move);
+	if(prPiece != EMPTY) {
+		ASSERT(pieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKint[prPiece]);
+		ClearPiece(to, pos);
+		AddPiece(to, pos, prPiece);
+	}
+
+	//checks for kingmove and updates the kingsquare
+	if(PieceKing[pos->pieces[to]]) {
+		pos->kingSQ[pos->side] = to;
+	}
+
+	pos->side ^= 1;
+
+	HASH_SIDE;
+
+	ASSERT(CheckBoard(pos));
+
+	//checks if the side that moved had their king in check, in that case illegal move
+	if(SqAttacked(pos->kingSQ[side], pos->side, pos)) {
+		return FALSE;
+	}
+
+	return TRUE;
+}
