@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)

@@ -260,7 +260,7 @@ void GenerateAllMoves( const S_BOARD *pos, S_MOVELIST *list) {
 		piece = LoopSlidePiece[pieceIndex++];
 	}
 
-	/*NonSliding pieces*/
+/*Nonsliding pieces */
 	pieceIndex = LoopNonSlideIndex[side];
 	piece = LoopNonSlidePiece[pieceIndex++];
 
@@ -284,7 +284,6 @@ void GenerateAllMoves( const S_BOARD *pos, S_MOVELIST *list) {
 						AddCaptureMove(pos, MOVE(sq, tmpSq, pos->pieces[tmpSq], EMPTY, 0), list);
 					}
 				}
-
 			}
 		}
 		piece = LoopNonSlidePiece[pieceIndex++];

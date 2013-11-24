@@ -10,8 +10,8 @@ U64 Perft(int depth, S_BOARD *pos) {
  	S_MOVELIST list[1];
     GenerateAllMoves(pos, list);
 
-    if(depth == 1) {
-    	return list->count;
+    if(depth == 0) {
+    	return 1;
     }
 
     U64 nodes = ZERO64;
@@ -50,26 +50,30 @@ void perftSuiteTest() {
 	 	fen = strtok(line, delim);
 	 	parseFEN(fen, board);
 
+	 	printf("\n\nTesting position: \n");
+	 	printBoard(board);
+
 
 	 	depthVal = strtok(NULL, delim);
 
 	 	depth = 1;
 	 	nodes = ZERO64;
 
-	 	while(depthVal != NULL) {
+ 		while(depthVal != NULL) {
+ 			printf("depth %d", depth);
 	 		nodes = atoi(depthVal+3);
 	 		perftResult = Perft(depth, board);
 
 	 		if(nodes != perftResult) {
-	 			printBoard(board);
-	 			printf("expected %I64d\nresult   %I64d \ndepth %d", nodes, perftResult, depth);
+	 			printf("\nERROR: expected %I64d\nresult   %I64d \ndepth %d\n", nodes, perftResult, depth);
 	 		}
+	 		else {
+	 			printf(" ok\n");
+	 		}
+
 
 	 		depthVal = strtok(NULL, delim);
 	 		depth++;
 	 	}
-
-	 	//printBoard(board);
-        printf("%s\n", fen); 
     }
 }

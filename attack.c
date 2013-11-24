@@ -1,4 +1,5 @@
 #include "defs.h"
+#include "stdio.h"
 
 const int KnDir[8] = { -8, -19,	-21, -12, 8, 19, 21, 12 };
 const int RkDir[4] = { -1, -10,	1, 10 };
@@ -11,12 +12,12 @@ int SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 	int dir;
 	int i;
 
-	//ASSERT(SqOnBoard(sq));
-	//ASSERT(SideValid(side));
-	//ASSERT(CheckBoard(pos));
+	ASSERT(SqOnBoard(sq));
+	ASSERT(SideValid(side));
+	ASSERT(checkBoard(pos));
 
 	//pawn attacks
-	if(side== WHITE) {
+	if(side == WHITE) {
 		if(pos->pieces[sq-11] == wP || pos->pieces[sq-9] == wP)  return TRUE;
 	} else { //BLACK
 		if(pos->pieces[sq+11] == bP || pos->pieces[sq+9] == bP) return TRUE;
