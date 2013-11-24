@@ -17,18 +17,17 @@
 #define CASTLE2 "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
 int main () {
-AllInit();		
-	
+	AllInit();
+/*
 	S_BOARD board[1];
-	
-	parseFEN(CASTLE2,board);
-	printBoard(board);
-	
+	parseFEN(START_FEN, board);
 	S_MOVELIST list[1];
-	
-	GenerateAllMoves(board,list);
+    GenerateAllMoves(board, list);
 
-	PrintMoveList(list);
+    PrintMoveList(list);
+*/
+	perftSuiteTest();
+
 	
 	return 0;
 }

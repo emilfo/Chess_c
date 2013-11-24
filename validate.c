@@ -1,7 +1,7 @@
 #include "defs.h"
 
 int SqOnBoard(const int sq) {
-	return FilesBrd[sq]==OFFBOARD ? FALSE : TRUE;
+	return GetFile[sq]==OFFBOARD ? FALSE : TRUE;
 }
 
 int SideValid(const int side) {

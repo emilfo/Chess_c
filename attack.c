@@ -11,9 +11,9 @@ int SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 	int dir;
 	int i;
 
-	ASSERT(SqOnBoard(sq));
-	ASSERT(SideValid(side));
-	ASSERT(CheckBoard(pos));
+	//ASSERT(SqOnBoard(sq));
+	//ASSERT(SideValid(side));
+	//ASSERT(CheckBoard(pos));
 
 	//pawn attacks
 	if(side== WHITE) {

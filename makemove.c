@@ -74,7 +74,7 @@ static void ClearPiece(const int sq, S_BOARD *pos) {
 
 
 static void AddPiece(const int sq, S_BOARD *pos, const int piece) {
-	ASSERT(pieceValid(piece))
+	ASSERT(PieceValid(piece))
 	ASSERT(SqOnBoard(sq));
 
 	int color = PieceColor[piece];
@@ -118,7 +118,7 @@ static void MovePiece(const int from, const int to, S_BOARD *pos) {
 	int color = PieceColor[piece];
 
 #ifdef DEBUG
-	int targetPceNum = FALSE
+	int targetPceNum = FALSE;
 #endif
 
 	//removes the piece and its old square from the posKey and sets the from-square to empty
@@ -152,7 +152,7 @@ static void MovePiece(const int from, const int to, S_BOARD *pos) {
 
 int MakeMove(S_BOARD *pos, int move) {
 
-	ASSERT(CheckBoard(pos));
+	ASSERT(checkBoard(pos));
 
 	//bitshifts the move to get its values as set up in the macros INT MOVE
 	int from = FROM(move);
@@ -226,10 +226,10 @@ int MakeMove(S_BOARD *pos, int move) {
 
 			if(side == WHITE) {
 				pos->enPassantSQ = from + 10;
-				ASSERT(getRank[pos->enPassantSQ == RANK_3]);
+				ASSERT(GetRank[pos->enPassantSQ] == RANK_3);
 			} else {
 				pos->enPassantSQ = from - 10;
-				ASSERT(getRank[pos->enPassantSQ == RANK_6]);
+				ASSERT(GetRank[pos->enPassantSQ] == RANK_6);
 			}
 			HASH_EP;
 		}
@@ -240,7 +240,7 @@ int MakeMove(S_BOARD *pos, int move) {
 	//checks after promoted pawn-move
 	int prPiece = PROMOTED(move);
 	if(prPiece != EMPTY) {
-		ASSERT(pieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKint[prPiece]);
+		ASSERT(PieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKing[prPiece]);
 		ClearPiece(to, pos);
 		AddPiece(to, pos, prPiece);
 	}
@@ -254,11 +254,11 @@ int MakeMove(S_BOARD *pos, int move) {
 
 	HASH_SIDE;
 
-	ASSERT(CheckBoard(pos));
+	ASSERT(checkBoard(pos));
 
 	//checks if the side that moved had their king in check, in that case illegal move
 	if(SqAttacked(pos->kingSQ[side], pos->side, pos)) {
-		TakeMove();
+		TakeMove(pos);
 		return FALSE;
 	}
 
@@ -267,7 +267,7 @@ int MakeMove(S_BOARD *pos, int move) {
 
 void TakeMove(S_BOARD *pos) {
 
-	ASSERT(CheckBoard(pos));
+	ASSERT(checkBoard(pos));
 
 	pos->hisPly--;
 	pos->ply--;
@@ -331,11 +331,11 @@ void TakeMove(S_BOARD *pos) {
 
 	int prPiece = PROMOTED(move);
 	if(prPiece != EMPTY) {
-		ASSERT(pieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKint[prPiece]);
+		ASSERT(PieceValid(prPiece) && !PiecePawn[prPiece] && !PieceKing[prPiece]);
 		ClearPiece(from, pos);
 		AddPiece(from, pos, (PieceColor[prPiece] == WHITE ? wP : bP));
 	}
 
-	ASSERT(CheckBoard(pos));
+	ASSERT(checkBoard(pos));
 
 }

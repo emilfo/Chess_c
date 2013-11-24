@@ -4,14 +4,16 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
 #else
 #define ASSERT(n) \
 if(!(n)) { \
-printf("%s - Failed ",#n); \
+printf("%s - Failed",#n); \
+printf("On %s ",__DATE__); \
+printf("At %s ",__TIME__); \
 printf("In File %s ",__FILE__); \
 printf("At Line %d\n",__LINE__); \
 exit(1);}
@@ -212,5 +214,9 @@ extern int PieceValid(const int pce);
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
+
+//perft.c
+extern U64 Perft(int depth, S_BOARD *pos);
+extern void perftSuiteTest();
 
 #endif
