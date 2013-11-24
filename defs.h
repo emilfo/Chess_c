@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -30,6 +30,8 @@ typedef uint64_t U64;
 #define ONE64 UINT64_C(1)
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+#define NOMOVE 0
 
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
@@ -203,6 +205,7 @@ extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
 //io.c
 extern char *printSquare(const int sq);
 extern char *printMove(const int move);
+extern int ParseMove(char *ptrChar, S_BOARD *pos);
 
 //validate.c
 extern int SqOnBoard(const int sq);
@@ -218,5 +221,9 @@ extern void TakeMove(S_BOARD *pos);
 //perft.c
 extern U64 Perft(int depth, S_BOARD *pos);
 extern void perftSuiteTest();
+
+//search.c
+extern long GetTimeMs();
+
 
 #endif
