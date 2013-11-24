@@ -63,6 +63,16 @@ typedef struct {
 	int count;
 }S_MOVELIST;
 
+typedef struct {
+	U64 posKey;
+	int move;
+} S_PVENTRY;
+
+typedef struct {
+	S_PVENTRY *pTable;
+	int numEntries;
+} S_PVTABLE;
+
 typedef struct 
 {
 	int move;
@@ -77,11 +87,6 @@ typedef struct
 {
 	int pieces [BRD_SQ_NUM];
 	U64 pawns[3];
-	/*U64 rooks[3];
-	U64 knights[3];
-	U64 bishops[3];
-	U64 kings[3];
-	U64 Queens[3];*/
 
 	int kingSQ[2];
 
@@ -106,6 +111,8 @@ typedef struct
 
 	//piece list
 	int pList[13][10];
+
+	S_PVTABLE PvTable[1];
 
 } S_BOARD;
 
@@ -225,5 +232,7 @@ extern void perftSuiteTest();
 //search.c
 extern long GetTimeMs();
 
+//pvtable.c
+extern void InitPvTable(S_PVTABLE *table);
 
 #endif
