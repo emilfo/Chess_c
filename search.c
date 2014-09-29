@@ -17,11 +17,11 @@ static int IsRepetition(const S_BOARD *pos) {
 	return FALSE;
 }
 
-static void ClearForSearch(S_BOARD *pos, S_SEARCHINGO *info) {//TODO
+static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {//TODO
 }
 
 static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
-											S_SEARCHINGO *info, int DoNull) {
+											S_SEARCHINFO *info, int DoNull) {
 	return 0;//TODO
 }
 

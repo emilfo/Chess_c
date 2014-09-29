@@ -269,6 +269,6 @@ extern void StorePvMove(const S_BOARD *pos, const int move);
 extern int ProbePvTable(const S_BOARD *pos);
 
 //evaluate.c
-extert int EvalPosition(const S_BOARD *pos);
+extern int EvalPosition(const S_BOARD *pos);
 
 #endif
