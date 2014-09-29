@@ -258,11 +258,17 @@ extern U64 Perft(int depth, S_BOARD *pos);
 extern void perftSuiteTest();
 
 //search.c
+extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
+
+//misc.c
 extern long GetTimeMs();
 
 //pvtable.c
 extern void InitPvTable(S_PVTABLE *table);
 extern void StorePvMove(const S_BOARD *pos, const int move);
 extern int ProbePvTable(const S_BOARD *pos);
+
+//evaluate.c
+extert int EvalPosition(const S_BOARD *pos);
 
 #endif
