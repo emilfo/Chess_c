@@ -7,7 +7,7 @@
 #include "time.h"
 #endif
 
-int GetTimeMs() { 
+long GetTimeMs() { 
 #ifdef WIN32
   return GetTickCount();
 #else
