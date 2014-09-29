@@ -116,7 +116,29 @@ typedef struct
 	S_PVTABLE PvTable[1];
 	int PvArray[MAXDEPTH];
 
+	int searchHistory[13][BRD_SQ_NUM];
+	int searchKillers[2][MAXDEPTH];
+
 } S_BOARD;
+
+
+typedef struct 
+{
+	//various info on when to stop searching
+	int starttime;
+	int stoptime;
+	int depth;
+	int depthset;
+	int timeset;
+	int movestogo;
+	int infinite;
+
+	long nodes; //count of all the postions the engines visists in the search
+
+	int quit;
+	int stopped; 
+
+} S_SEARCHINFO;
 
 /* INT MOVE */
 /*   
