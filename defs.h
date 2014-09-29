@@ -25,6 +25,7 @@ typedef uint64_t U64;
 #define BRD_SQ_NUM 120
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
+#define MAXDEPTH 64
 
 #define ZERO64 UINT64_C(0)
 #define ONE64 UINT64_C(1)
@@ -113,6 +114,7 @@ typedef struct
 	int pList[13][10];
 
 	S_PVTABLE PvTable[1];
+	int PvArray[MAXDEPTH];
 
 } S_BOARD;
 
@@ -221,6 +223,10 @@ extern int FileRankValid(const int fr);
 extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
+//movegen.c
+extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
+extern int MoveExists(S_BOARD *pos, const int move);
+
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
@@ -234,5 +240,7 @@ extern long GetTimeMs();
 
 //pvtable.c
 extern void InitPvTable(S_PVTABLE *table);
+extern void StorePvMove(const S_BOARD *pos, const int move);
+extern int ProbePvTable(const S_BOARD *pos);
 
 #endif
