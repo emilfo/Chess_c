@@ -56,7 +56,9 @@ enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
 typedef struct {
 	int move;
-	int score;
+	int score;	ASSERT(SqOnBoard(FROMSQ(move)));
+	ASSERT(SqOnBoard(TOSQ(move)));
+	
 }S_MOVE;
 
 typedef struct {
