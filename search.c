@@ -8,6 +8,23 @@ static void CheckUp() {
 	//TODO check if time is up or interrupted
 }
 
+static void PickNextMove(int moveNum, S_MOVELIST *list) {
+	S_MOVE temp;
+	int i;
+	int bestScore = -INFINITE;
+	int bestNum = moveNum;
+
+	for(i = moveNum; i < list->count; i++) {
+		if(list->moves[i].score > bestScore) {
+			bestScore = list->moves[i].score;
+			bestNum = i;
+		}
+	}
+	temp = list->moves[moveNum];
+	list->moves[moveNum] = list->moves[bestNum];
+	list->moves[bestNum] = temp;
+}
+
 static int IsRepetition(const S_BOARD *pos) {
 	int index = 0;
 
@@ -16,7 +33,7 @@ static int IsRepetition(const S_BOARD *pos) {
 			return TRUE;
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -55,7 +72,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	}
 
 	info->nodes++;
-	
+
 	if(IsRepetition(pos) || pos->fiftyMove >= 100) {
 		return 0;
 	}
@@ -73,14 +90,15 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	int BestMove = NOMOVE;
 	int Score = -INFINITE;
 
-	for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {	
+	for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {
+		PickNextMove(MoveNum, list);
 
 		if (!MakeMove(pos,list->moves[MoveNum].move))  {
 			continue;
 		}
 
 		Legal++;
-		Score = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);		
+		Score = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);
 		TakeMove(pos);
 
 		if (Score > alpha) {
@@ -93,7 +111,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 			}
 			alpha = Score;
 			BestMove = list->moves[MoveNum].move;
-		}		
+		}
 	}
 
 	if (Legal == 0) {
@@ -138,5 +156,6 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 			printf(" %s", printMove(pos->PvArray[pvNum]));
 		}
 		printf("\n");
+		printf("Ordering:%.2f\n",(info->fhf/info->fh));
 	}
 }

@@ -279,8 +279,6 @@ void resetBoard (S_BOARD *pos) {
 
 	//no posKey
 	pos->posKey = ZERO64;
-
-	InitPvTable(pos->PvTable);
 }
 
 void printBoard (const S_BOARD *pos) {

@@ -43,13 +43,6 @@ int InitMvvLva() {
 											6 - (VictimScore[attacker] / 100);
 		}
 	}
-
-	for (victim = wP; victim <= bK; victim++) {
-		for (attacker = wP; attacker <= bK; attacker++) {
-			printf("%c x %c = %d\n",PceChar[attacker], PceChar[victim],
-											MvvLvaScores[victim][attacker]);
-		}
-	}
 }
 
 int MoveExists(S_BOARD *pos, const int move) {
