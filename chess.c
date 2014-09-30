@@ -16,11 +16,14 @@
 #define CASTLE1 "r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"
 #define CASTLE2 "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 
+#define WAC1 "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - -"
+
 int main () {
 	AllInit();
 
 	S_BOARD board[1];
-	parseFEN(START_FEN, board);
+	S_SEARCHINFO info[1];
+	parseFEN(WAC1, board);
 
 	char input[6];
 	int Move = NOMOVE;
@@ -36,15 +39,9 @@ int main () {
 			break;
 		} else if(input[0]=='t') {
 			TakeMove(board);			
-		} else if(input[0]=='p') {//prints last 4 moves
-			// PerftTest(4,board);	
-			Max = GetPvLine(4, board);	
-			printf("PvLine of %d Moves: ", Max);		
-			for(PvNum = 0; PvNum < Max; ++PvNum) {
-				Move = board->PvArray[PvNum];
-				printf(" %s",printMove(Move));
-			}
-			printf("\n");
+		} else if(input[0]=='s') {
+			info->depth = 4;
+			SearchPosition(board, info);
 		} else {
 			Move = ParseMove(input, board);
 			

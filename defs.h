@@ -39,7 +39,7 @@ enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE
 enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE, };
 
 enum { WHITE, BLACK, BOTH };
-enum { 
+enum {
 	A1 = 21, B1, C1, D1, E1, F1, G1, H1,
 	A2 = 31, B2, C2, D2, E2, F2, G2, H2,
 	A3 = 41, B3, C3, D3, E3, F3, G3, H3,
@@ -74,7 +74,7 @@ typedef struct {
 	int numEntries;
 } S_PVTABLE;
 
-typedef struct 
+typedef struct
 {
 	int move;
 	int castlePerm;
@@ -84,7 +84,7 @@ typedef struct
 
 } S_UNDO;
 
-typedef struct 
+typedef struct
 {
 	int pieces [BRD_SQ_NUM];
 	U64 pawns[3];
@@ -122,7 +122,7 @@ typedef struct
 } S_BOARD;
 
 
-typedef struct 
+typedef struct
 {
 	//various info on when to stop searching
 	int starttime;
@@ -136,12 +136,15 @@ typedef struct
 	long nodes; //count of all the postions the engines visists in the search
 
 	int quit;
-	int stopped; 
+	int stopped;
+
+	float fh; //failhigh
+	float fhf; //failhighfirst
 
 } S_SEARCHINFO;
 
 /* INT MOVE */
-/*   
+/*
 0000 0000 0000 0000 0000 0111 1111 -> From 0x7F
 0000 0000 0000 0011 1111 1000 0000 -> To >> 7, 0x7F
 0000 0000 0011 1100 0000 0000 0000 -> Captured >> 14, 0xF
