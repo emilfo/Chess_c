@@ -254,6 +254,7 @@ extern int PieceValid(const int pce);
 extern int InitMvvLva();
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern int MoveExists(S_BOARD *pos, const int move);
+extern void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list);
 
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
