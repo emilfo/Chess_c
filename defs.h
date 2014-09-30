@@ -249,6 +249,7 @@ extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
 //movegen.c
+extern int InitMvvLva();
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern int MoveExists(S_BOARD *pos, const int move);
 

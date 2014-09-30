@@ -30,6 +30,28 @@ const int NumDir[13] = {
  0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8
 };
 
+const int VictimScore[13] = { 0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+static int MvvLvaScores[13][13];
+
+//init most valuable victim, least valueable target
+int InitMvvLva() {
+	int attacker, victim;
+
+	for (attacker = wP; attacker <= bK; attacker++) {
+		for (victim = wP; victim <= bK; victim++) {
+			MvvLvaScores[victim][attacker] = VictimScore[victim] +
+											6 - (VictimScore[attacker] / 100);
+		}
+	}
+
+	for (victim = wP; victim <= bK; victim++) {
+		for (attacker = wP; attacker <= bK; attacker++) {
+			printf("%c x %c = %d\n",PceChar[attacker], PceChar[victim],
+											MvvLvaScores[victim][attacker]);
+		}
+	}
+}
+
 int MoveExists(S_BOARD *pos, const int move) {
 	
 	S_MOVELIST list[1];
@@ -57,13 +79,14 @@ static void AddQuietMove(const S_BOARD *pos, int move, S_MOVELIST *list) {
 
 static void AddCaptureMove(const S_BOARD *pos, int move, S_MOVELIST *list) {
 	list->moves[list->count].move = move;
-	list->moves[list->count].score = 0;
+	list->moves[list->count].score = 
+					MvvLvaScores[CAPTURED(move)][pos->pieces[FROM(move)]];
 	list->count ++;
 }
 
 static void AddEnPassantMove(const S_BOARD *pos, int move, S_MOVELIST *list) {
 	list->moves[list->count].move = move;
-	list->moves[list->count].score = 0;
+	list->moves[list->count].score = 105;
 	list->count ++;
 }
 

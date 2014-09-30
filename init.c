@@ -104,6 +104,6 @@ void AllInit () {
 	InitBitMask();
 	InitHashKeys();
 	InitGetFileRank();
-
+	InitMvvLva();
 }
 
