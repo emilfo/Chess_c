@@ -50,5 +50,26 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 }
 
 void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
-	//TODO iterative deepening, search init
+	int bestMove = NOMOVE;
+	int bestScore = -infinite;
+	int currentDepth;
+	int pvNum;
+	int pvMoves = 0;
+
+	ClearForSearch(pos, info);
+
+	for (currentDepth = 1; currentDepth <= info->depth; currentDepth++) {
+		bestScore = AlphaBeta(-infinite, infinite, currentDepth, pos, info,
+																		TRUE);
+		//TODO out of time?
+		pvMoves = GetPvLine(currentDepth, pos);
+		bestMove = pos->PvArray[0];
+
+		printf("Depth:%d, score:%d, move:%s, nodes:%ld ", currentDepth,
+								bestScore, printMove(bestMove), info->nodes);
+		printf("pv");
+		for (pvNum = 0; pvNum < pvMoves; pvNum++) {
+			printf(" %s", printMove(pos->PvArray[pvNum]));
+		}
+		printf("\n");
 }
