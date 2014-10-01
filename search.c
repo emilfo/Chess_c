@@ -4,8 +4,10 @@
 #define INFINITE 30000
 #define MATE 29000
 
-static void CheckUp() {
-	//TODO check if time is up or interrupted
+static void CheckUp(S_SEARCHINFO *info) {
+	if(info->timeset == TRUE && GetTimeMs() > info->stoptime) {
+		info->stopped = TRUE;
+	}
 }
 
 static void PickNextMove(int moveNum, S_MOVELIST *list) {
@@ -64,6 +66,12 @@ static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 
 static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 	ASSERT(CheckBoard(pos));
+
+	//Checks if time is up for every 2048 node we check
+	if((info->nodes & 2047) == 0) {
+		CheckUp(info);
+	}
+
 	info->nodes++;
 
 	if (IsRepetition(pos) || pos->fiftyMove >= 100) {
@@ -104,6 +112,10 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 		Score = -Quiescence(-beta, -alpha, pos, info);
 		TakeMove(pos);
 
+		if (info->stopped == TRUE) {
+			return 0;
+		}
+
 		if (Score > alpha) {
 			if (Score >= beta) {
 				if(Legal==1) {
@@ -134,9 +146,14 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		//return EvalPosition(pos);
 	}
 
+	//Checks if time is up for every 2048 node we check
+	if((info->nodes & 2047) == 0) {
+		CheckUp(info);
+	}
+
 	info->nodes++;
 
-	if(IsRepetition(pos) || pos->fiftyMove >= 100) {
+	if((IsRepetition(pos) || pos->fiftyMove >= 100) && pos->ply) {
 		return 0;
 	}
 
@@ -174,6 +191,10 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		Legal++;
 		Score = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);
 		TakeMove(pos);
+
+		if (info->stopped == TRUE) {
+			return 0;
+		}
 
 		if (Score > alpha) {
 			if (Score >= beta) {
@@ -226,7 +247,10 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 	for (currentDepth = 1; currentDepth <= info->depth; currentDepth++) {
 		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info,
 																		TRUE);
-		//TODO out of time?
+		if(info->stopped == TRUE) {
+			break;
+		}
+
 		pvMoves = GetPvLine(currentDepth, pos);
 		bestMove = pos->PvArray[0];
 
