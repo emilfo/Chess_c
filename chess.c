@@ -44,6 +44,8 @@ int main () {
 			TakeMove(board);			
 		} else if(input[0]=='s') {
 			info->depth = 6;
+			info->starttime = GetTimeMs();
+			info->stoptime = GetTimeMs() + 200000;
 			SearchPosition(board, info);
 		} else {
 			Move = ParseMove(input, board);

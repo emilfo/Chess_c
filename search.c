@@ -244,6 +244,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 
 	ClearForSearch(pos, info);
 
+	//iterative deepening, calling alphabeta for every depth
 	for (currentDepth = 1; currentDepth <= info->depth; currentDepth++) {
 		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info,
 																		TRUE);
@@ -254,8 +255,8 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 		pvMoves = GetPvLine(currentDepth, pos);
 		bestMove = pos->PvArray[0];
 
-		printf("Depth:%d, score:%d, move:%s, nodes:%ld ", currentDepth,
-								bestScore, printMove(bestMove), info->nodes);
+		printf("info score cp %d depth %d nodes %ld time %d ",
+				bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
 		printf("pv");
 		for (pvNum = 0; pvNum < pvMoves; pvNum++) {
 			printf(" %s", printMove(pos->PvArray[pvNum]));
@@ -263,4 +264,5 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 		printf("\n");
 		printf("Ordering:%.2f\n",(info->fhf/info->fh));
 	}
+	printf("bestmove %s\n", printMove(bestMove));
 }
