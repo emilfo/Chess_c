@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -56,9 +56,7 @@ enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
 typedef struct {
 	int move;
-	int score;	ASSERT(SqOnBoard(FROMSQ(move)));
-	ASSERT(SqOnBoard(TOSQ(move)));
-	
+	int score;
 }S_MOVE;
 
 typedef struct {
@@ -277,5 +275,8 @@ extern int ProbePvTable(const S_BOARD *pos);
 
 //evaluate.c
 extern int EvalPosition(const S_BOARD *pos);
+
+//uci.c
+extern void Uci_Loop();
 
 #endif

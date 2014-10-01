@@ -65,7 +65,7 @@ static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 }
 
 static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
-	ASSERT(CheckBoard(pos));
+	ASSERT(checkBoard(pos));
 
 	//Checks if time is up for every 2048 node we check
 	if((info->nodes & 2047) == 0) {

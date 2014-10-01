@@ -360,8 +360,8 @@ void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list) {
 	int tmpSq = 0;
 	int pieceNum = 0;
 
-	int dir = 0
-;	int i = 0;
+	int dir = 0;
+	int i = 0;
 	int pieceIndex = 0;
 
 	if(side == WHITE) {
@@ -369,8 +369,6 @@ void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list) {
 		for (pieceNum = 0; pieceNum < pos->pceNum[wP]; pieceNum++) {
 			sq = pos->pList[wP][pieceNum];
 			ASSERT(SqOnBoard(sq));
-	ASSERT(SqOnBoard(FROMSQ(move)));
-	ASSERT(SqOnBoard(TOSQ(move)));
 	
 			if(!SQOFFBOARD(sq + 9) && PieceColor[pos->pieces[sq + 9]] == BLACK) {
 				AddWhitePawnCapMove(pos, sq, (sq+9), pos->pieces[sq + 9], list);
