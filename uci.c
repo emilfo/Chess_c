@@ -16,7 +16,7 @@ void ParsePosition(char* lineIn, S_BOARD *pos){
 	if (strncmp(strPtr, "startpos", 8) == 0) {
 		parseFEN(START_FEN, pos);
 		strPtr += 9;
-	} else if (strncmp(strPtr, "fen", 3)) {
+	} else if (strncmp(strPtr, "fen", 3) == 0) {
 		strPtr += 4;
 		parseFEN(strPtr, pos);
 	} else { //failsafe, should never happen
@@ -48,9 +48,6 @@ void ParsePosition(char* lineIn, S_BOARD *pos){
 			}
 			strPtr++;
 		}
-	}
-	else {
-		printf("NO MOVES\n");
 	}
 	printBoard(pos);
 }
