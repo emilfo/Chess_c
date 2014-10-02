@@ -5,7 +5,56 @@
 #define INPUTBUFFER 400 * 6
 
 void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos) {
-	return;
+	int depth = -1, movetime = -1, time = -1, inc = 0, movestogo = 30;
+	char *strPtr = NULL;
+	info->timeset = FALSE;
+	info->depth = MAXDEPTH;
+
+	if ((strPtr = strstr(line, "infinite"))) {
+		info->timeset = FALSE;
+	}
+	if ((strPtr = strstr(line, "binc")) && pos->side == BLACK) {
+		inc = atoi(strPtr + 5);
+	}
+	if ((strPtr = strstr(line, "winc")) && pos->side == WHITE) {
+		inc = atoi(strPtr + 5);
+	}
+	if ((strPtr = strstr(line, "btime")) && pos->side == BLACK) {
+		time = atoi(strPtr + 6);
+	}
+	if ((strPtr = strstr(line, "wtime")) && pos->side == WHITE) {
+		time = atoi(strPtr + 6);
+	}
+	if ((strPtr = strstr(line, "movestogo"))) {
+		movestogo = atoi(strPtr + 10);
+	}
+	if ((strPtr = strstr(line, "movetime"))) {
+		movetime = atoi(strPtr + 9);
+	}
+	if ((strPtr = strstr(line, "depth"))) {
+		depth = atoi(strPtr + 6);
+	}
+
+	info->starttime = GetTimeMs();
+
+	if (movetime != -1) {
+		time = movetime;
+		movestogo = 1;
+	}
+	if(time != -1) {
+		info->timeset = TRUE;
+		time /= movestogo;
+		time -= 50;
+		info->stoptime = info->starttime + time + inc;
+	}
+	if(depth != -1) {
+		info->depth = depth;
+	}
+
+	printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
+		time,info->starttime,info->stoptime,info->depth,info->timeset);
+
+	SearchPosition(pos, info);
 }
 
 //Parses position from the UCI pro
@@ -26,7 +75,7 @@ void ParsePosition(char* lineIn, S_BOARD *pos){
 	strPtr = strstr(lineIn, "moves");
 	int move;
 
-	//the GUI wants us to parse moves aswell
+	//if the GUI wants us to parse moves aswell
 	if (strPtr != NULL) {
 		//skip 'moves '
 		strPtr += 6;
