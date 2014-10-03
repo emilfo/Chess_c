@@ -256,14 +256,38 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 		pvMoves = GetPvLine(currentDepth, pos);
 		bestMove = pos->PvArray[0];
 
-		printf("info score cp %d depth %d nodes %ld time %d ",
+		if (info->GAME_MODE == UCIMODE) {
+			printf("info score cp %d depth %d nodes %ld time %d ",
 				bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
-		printf("pv");
-		for (pvNum = 0; pvNum < pvMoves; pvNum++) {
-			printf(" %s", printMove(pos->PvArray[pvNum]));
 		}
-		printf("\n");
-		//printf("Ordering:%.2f\n",(info->fhf/info->fh));
+		else if (info->GAME_MODE == XBOARDMODE && info->POST_THINKING == TRUE) {
+			printf("%d %d %d %ld ",
+					currentDepth, bestScore, (GetTimeMs()-info->starttime)/10,
+					info->nodes);
+		}
+		else if (info->POST_THINKING == TRUE) {
+			printf ("score:%d depth:%d nodes:%ld time:%d(ms)",
+					bestScore, currentDepth, info->nodes, GetTimeMs()-info->starttime);
+		}
+
+		if (info->GAME_MODE == UCIMODE || info->POST_THINKING == TRUE) {
+			pvMoves = GetPvLine(currentDepth, pos);
+			printf("pv");
+			for (pvNum = 0; pvNum < pvMoves; pvNum++) {
+				printf(" %s", printMove(pos->PvArray[pvNum]));
+			}
+			printf("\n");
+		}
 	}
-	printf("bestmove %s\n", printMove(bestMove));
+
+	if (info->GAME_MODE == UCIMODE) {
+		printf("bestmove %s\n", printMove(bestMove));
+	} else if (info->GAME_MODE == XBOARDMODE) {
+		printf("move %s\n", printMove(bestMove));
+		MakeMove(pos, bestMove);
+	} else {
+		printf("\n\n ===== ELOmif makes move %s =====\n\n", printMove(bestMove));
+		MakeMove(pos, bestMove);
+		printBoard(pos);
+	}
 }
