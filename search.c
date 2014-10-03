@@ -8,6 +8,8 @@ static void CheckUp(S_SEARCHINFO *info) {
 	if(info->timeset == TRUE && GetTimeMs() > info->stoptime) {
 		info->stopped = TRUE;
 	}
+
+	ReadInput(info);
 }
 
 static void PickNextMove(int moveNum, S_MOVELIST *list) {

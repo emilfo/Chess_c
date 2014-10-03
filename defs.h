@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -267,6 +267,7 @@ extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
 
 //misc.c
 extern long GetTimeMs();
+extern void ReadInput(S_SEARCHINFO *info);
 
 //pvtable.c
 extern void InitPvTable(S_PVTABLE *table);
@@ -277,6 +278,6 @@ extern int ProbePvTable(const S_BOARD *pos);
 extern int EvalPosition(const S_BOARD *pos);
 
 //uci.c
-extern void Uci_Loop();
+extern void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info);
 
 #endif

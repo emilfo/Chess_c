@@ -22,5 +22,11 @@
 int main () {
 	AllInit();
 
+	S_BOARD pos[1];
+	S_SEARCHINFO info[1];
+	InitPvTable(pos->PvTable);
+
 	Uci_Loop();
+
+	free(pos->PvTable->pTable);
 }
