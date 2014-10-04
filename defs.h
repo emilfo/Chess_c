@@ -243,7 +243,7 @@ extern U64 IsolatedMask[64];
 /* FUNCTIONS */
 
 //init.c
-extern void AllInit();
+extern void AllInit (S_BOARD *pos);
 
 // bitboards.c
 extern void printBitBoard (U64 bb);

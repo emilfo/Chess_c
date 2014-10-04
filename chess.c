@@ -21,11 +21,15 @@
 #define WAC2 "r1b1k2r/ppppnppp/2n2q2/2b5/3NP3/2P1B3/PP3PPP/RN1QKB1R w KQkq - 0 1"
 
 int main () {
-	AllInit();
-
 	S_BOARD pos[1];
+	//pos->HashTable->pTable = NULL;
+
 	S_SEARCHINFO info[1];
 	info->quit = FALSE;
+
+	AllInit(pos);
+
+
 	InitHashTable(pos->HashTable);
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);

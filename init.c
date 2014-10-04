@@ -175,8 +175,54 @@ void InitSQ120toSQ64 () {
 
 
 }
+void InitPos(S_BOARD *pos) {
+	return;
+	int i, j;
 
-void AllInit () {
+	for (i = 0; i < BRD_SQ_NUM; i++) {
+		pos->pieces[0] = 0;
+	}
+	for (i = 0; i < 3; i++) {
+		pos->pawns[3] = ZERO64;
+	}
+	for (i = 0; i < 2; i++) {
+		pos->kingSQ[i] = 0;
+	}
+	for (i = 0; i < 13; i++) {
+		pos->pceNum[i] = 0;
+	}
+	for (i = 0; i < 2; i++) {
+		pos->bigPce[i] = 0;
+		pos->majPce[i] = 0;
+		pos->minPce[i] = 0;
+		pos->material[i] = 0;
+	}
+	for (i = 0; i < 13; i++) {
+		for (j = 0; j < 10; j++) {
+			pos->pList[i][j] = 0;
+		}
+	}
+	for (i = 0; i < 13; i++) {
+		for (j = 0; j < BRD_SQ_NUM; j++) {
+			pos->searchHistory[i][j] = 0;
+		}
+	}
+	for (i = 0; i < MAXDEPTH; i++) {
+		pos->PvArray[i] = 0;
+	}
+	for (i = 0; i < 2; i++) {
+		for (j = 0; j < MAXDEPTH; j++) {
+			pos->searchKillers[i][j] = 0;
+		}
+	}
+
+	//S_UNDO history [MAXGAMEMOVES];
+
+	//S_HASHTABLE HashTable[1];
+}
+
+void AllInit (S_BOARD *pos) {
+	InitPos(pos);
 	InitSQ120toSQ64();
 	InitBitMask();
 	InitHashKeys();

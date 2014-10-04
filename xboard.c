@@ -284,6 +284,7 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			printf("post - show thinking\n");
 			printf("nopost - do not show thinking\n");
 			printf("new - start new game\n");
+			printf("setboard - start new game\n");
 			printf("go - set computer thinking\n");
 			printf("depth x - set depth to x\n");
 			printf("time x - set thinking time to x seconds (depth still applies if set)\n");
@@ -350,6 +351,12 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			engineSide = pos->side;  
 			continue; 
 		}	
+		
+		if(!strcmp(command, "setboard")){
+			engineSide = BOTH;  
+			parseFEN(inBuf+9, pos); 
+			continue; 
+		}   		
 		
 		move = ParseMove(inBuf, pos);	
 		if(move == NOMOVE) {
