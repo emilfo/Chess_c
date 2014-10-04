@@ -1,6 +1,13 @@
 #include "defs.h"
 #include "stdio.h"
 
+//used to make a random number used for the hashkey'ing
+#define RAND_64 (	(U64)rand() | \
+					(U64)rand() << 15 | \
+					(U64)rand() << 30 | \
+					(U64)rand() << 45 | \
+					((U64)rand() & 0xf) << 60)
+
 int SQ120toSQ64[BRD_SQ_NUM];
 int SQ64toSQ120[64];
 int GetFile[BRD_SQ_NUM];
@@ -13,15 +20,86 @@ U64 PieceKeys[13][120];
 U64 SideKey;
 U64 CastleKeys[16];
 
-//used to make a random number used for the hashkey'ing
-#define RAND_64 (	(U64)rand() | \
-					(U64)rand() << 15 | \
-					(U64)rand() << 30 | \
-					(U64)rand() << 45 | \
-					((U64)rand() & 0xf) << 60)
+U64 FileBBMask[8];
+U64 RankBBMask[8];
+
+U64 BlackPassedMask[64];
+U64 WhitePassedMask[64];
+U64 IsolatedMask[64];
 					
 
+void InitEvalMasks() {
+	int sq, tsq, r, f;
 
+	for (sq = 0; sq < 8; sq++) {
+		FileBBMask[sq] = ZERO64;
+		RankBBMask[sq] = ZERO64;
+	}
+
+	for (r = RANK_8; r >= RANK_1; r--) {
+		for (f = FILE_A; f <= FILE_H; f++) {
+			sq = (r * 8) + f;
+			FileBBMask[f] |= (ONE64 << sq);
+			RankBBMask[r] |= (ONE64 << sq);
+		}
+	}
+
+	for (sq = 0; sq < 64; sq++) {
+		IsolatedMask[sq] = ZERO64;
+		WhitePassedMask[sq] = ZERO64;
+		BlackPassedMask[sq] = ZERO64;
+	}
+
+
+	for (sq = 0; sq < 64; sq++) {
+
+		tsq = sq + 8;
+		while (tsq < 64) {
+			WhitePassedMask[sq] |= (ONE64 << tsq);
+			tsq += 8;
+		}
+
+
+		tsq = sq - 8;
+		while (tsq >= 0) {
+			BlackPassedMask[sq] |= (ONE64 << tsq);
+			tsq -= 8;
+		}
+
+		if(GetFile[SQ120(sq)] > FILE_A) {
+			IsolatedMask[sq] |= FileBBMask[GetFile[SQ120(sq)] - 1];
+
+			tsq = sq + 7;
+			while (tsq < 64) {
+				WhitePassedMask[sq] |= (ONE64 << tsq);
+				tsq += 8;
+			}
+
+			tsq = sq - 9;
+			while (tsq >= 0) {
+				BlackPassedMask[sq] |= (ONE64 << tsq);
+				tsq -= 8;
+			}
+		}
+
+		if(GetFile[SQ120(sq)] < FILE_H) {
+			IsolatedMask[sq] |= FileBBMask[GetFile[SQ120(sq)] + 1];
+
+			tsq = sq + 9;
+			while (tsq < 64) {
+				WhitePassedMask[sq] |= (ONE64 << tsq);
+				tsq += 8;
+			}
+
+			tsq = sq - 7;
+			while (tsq >= 0) {
+				BlackPassedMask[sq] |= (ONE64 << tsq);
+				tsq -= 8;
+			}
+		}
+
+	}
+}
 
 void InitGetFileRank() {
 	int rank;
@@ -41,6 +119,7 @@ void InitGetFileRank() {
 		}
 	}
 }
+
 void InitHashKeys() {
 	
 	int index = 0;
@@ -70,8 +149,6 @@ void InitBitMask() {
 		SetMask[i] |= (ONE64 << i);
 		ClearMask[i] = ~SetMask[i];
 	}
-
-
 }
 
 void InitSQ120toSQ64 () {
@@ -104,6 +181,7 @@ void AllInit () {
 	InitBitMask();
 	InitHashKeys();
 	InitGetFileRank();
+	InitEvalMasks();
 	InitMvvLva();
 }
 

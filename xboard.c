@@ -230,6 +230,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 		}    
     }	
 }
+
 void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
 	printf("Welcome to ELOmif In Console Mode!\n");
@@ -357,5 +358,6 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 		}
 		MakeMove(pos, move);
 		pos->ply=0;
+		printBoard(pos);
     }	
 }

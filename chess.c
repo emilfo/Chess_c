@@ -53,7 +53,11 @@ int main () {
 			Console_Loop(pos, info);
 			if(info->quit == TRUE) break;
 			continue;
-		} else if(!strncmp(line, "quit",4))	{
+		} else if (!strncmp(line, "mirrortest",10))	{
+			//TODO
+			continue;
+		}
+		else if (!strncmp(line, "quit",4))	{
 			break;
 		}
 	}
