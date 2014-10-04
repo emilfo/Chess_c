@@ -323,7 +323,6 @@ void TakeMove(S_BOARD *pos) {
 	}
 
 	int captured = CAPTURED(move);
-
 	if(captured != EMPTY) {
 		ASSERT(PieceValid(captured));
 		AddPiece(to, pos, captured);
@@ -337,5 +336,48 @@ void TakeMove(S_BOARD *pos) {
 	}
 
 	ASSERT(checkBoard(pos));
-
 }
+
+void MakeNullMove(S_BOARD *pos) {
+	ASSERT(checkBoard(pos));
+	//TODO check incheck
+
+	pos->ply++;
+	pos->history[pos->hisPly].posKey = pos->posKey;
+
+	if (pos->enPassantSQ != NO_SQ) HASH_EP;
+
+	pos->history[pos->hisPly].move = NOMOVE;
+    pos->history[pos->hisPly].fiftyMove = pos->fiftyMove;
+    pos->history[pos->hisPly].enPassantSQ = pos->enPassantSQ;
+    pos->history[pos->hisPly].castlePerm = pos->castlePerm;
+
+	pos->enPassantSQ = NO_SQ;
+	pos->side ^= 1;
+	pos->hisPly++;
+	HASH_SIDE;
+
+	ASSERT(checkBoard(pos));
+}
+
+void TakeNullMove(S_BOARD *pos) {
+	ASSERT(checkBoard(pos));
+
+    pos->hisPly--;
+    pos->ply--;
+
+	if (pos->enPassantSQ != NO_SQ) HASH_EP;
+
+	pos->fiftyMove = pos->history[pos->hisPly].fiftyMove;
+	pos->enPassantSQ = pos->history[pos->hisPly].enPassantSQ;
+	pos->castlePerm = pos->history[pos->hisPly].castlePerm;
+
+	if (pos->enPassantSQ != NO_SQ) HASH_EP;
+
+	pos->side ^= 1;
+	HASH_SIDE;
+
+	ASSERT(checkBoard(pos));
+}
+
+

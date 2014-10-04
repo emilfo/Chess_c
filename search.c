@@ -166,6 +166,20 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	if(InCheck == TRUE) {
 		depth++;
 	}
+	int Score = -INFINITE;
+
+	if( DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 0) && depth >= 4) {
+		MakeNullMove(pos);
+		Score = -AlphaBeta(-beta, -beta + 1, depth-4, pos, info, FALSE);
+		TakeNullMove(pos);
+
+		if (info->stopped == TRUE) {
+			return 0;
+		}
+		if(Score >= beta) {
+			return beta;
+		}
+	}
 
 	S_MOVELIST list[1];
 	GenerateAllMoves(pos,list);
@@ -174,8 +188,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	int Legal = 0;
 	int OldAlpha = alpha;
 	int BestMove = NOMOVE;
-	int Score = -INFINITE;
 	int PvMove = ProbePvTable(pos);
+	Score = -INFINITE;
 
 	//If we ahve a PV-move, we run through the list of moves and score it best
 	if (PvMove !=NOMOVE) {
@@ -337,5 +351,5 @@ void MirrorBoard(S_BOARD *pos) {
 
 	UpdateListsMaterial(pos);
 
-    ASSERT(CheckBoard(pos));
+    ASSERT(checkBoard(pos));
 }

@@ -196,6 +196,7 @@ extern U64 ClearMask[64];
 extern U64 PieceKeys[13][BRD_SQ_NUM];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
+
 extern char PceChar[];
 extern char SideChar[];
 extern char RankChar[];
@@ -272,6 +273,8 @@ extern void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list);
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
+extern void MakeNullMove(S_BOARD *pos);
+extern void TakeNullMove(S_BOARD *pos);
 
 //perft.c
 extern U64 Perft(int depth, S_BOARD *pos);
