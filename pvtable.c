@@ -45,7 +45,7 @@ void ClearHashTable(S_HASHTABLE *table) {
   table->newWrite = 0;
 }
 
-void InitHashTable(S_HASHTABLE *table) {  
+void InitHashTable(S_HASHTABLE *table) {
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
     table->numEntries -= 2;
 	
