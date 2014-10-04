@@ -356,8 +356,8 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			printf("Command unknown:%s\n",inBuf);
 			continue;
 		}
+
 		MakeMove(pos, move);
 		pos->ply=0;
-		printBoard(pos);
     }	
 }
