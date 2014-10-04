@@ -56,7 +56,9 @@ static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 		}
 	}
 
-	ClearPvTable(pos->PvTable);
+	pos->HashTable->overWrite = 0;
+	pos->HashTable->hit = 0;
+	pos->HashTable->cut = 0;
 	pos->ply = 0;
 
 	info->stopped = 0;
@@ -100,7 +102,7 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 	int OldAlpha = alpha;
 	int BestMove = NOMOVE;
 	Score = -INFINITE;
-	int PvMove = ProbePvTable(pos);
+	//int PvMove = ProbePvTable(pos);
 
 	for (MoveNum = 0; MoveNum < list->count; ++MoveNum) {
 		PickNextMove(MoveNum, list);
@@ -129,10 +131,10 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 			BestMove = list->moves[MoveNum].move;
 		}
 	}
-
+/*
 	if (alpha != OldAlpha) {
-		StorePvMove(pos, BestMove);
-	}
+		//StorePvMove(pos, BestMove);
+	}*/
 
 	return alpha;
 }
@@ -166,7 +168,13 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	if(InCheck == TRUE) {
 		depth++;
 	}
+
 	int Score = -INFINITE;
+	int PvMove = NOMOVE;
+	if( ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE ) {
+		pos->HashTable->cut++;
+		return Score;
+	}
 
 	if( DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 0) && depth >= 4) {
 		MakeNullMove(pos);
@@ -176,7 +184,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		if (info->stopped == TRUE) {
 			return 0;
 		}
-		if(Score >= beta) {
+
+		if(Score >= beta && abs(Score) < ISMATE) {
 			return beta;
 		}
 	}
@@ -188,7 +197,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	int Legal = 0;
 	int OldAlpha = alpha;
 	int BestMove = NOMOVE;
-	int PvMove = ProbePvTable(pos);
+	int bestScore = -INFINITE;
 	Score = -INFINITE;
 
 	//If we ahve a PV-move, we run through the list of moves and score it best
@@ -201,7 +210,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		}
 	}
 
-	for (MoveNum = 0; MoveNum < list->count; ++MoveNum) {
+	for (MoveNum = 0; MoveNum < list->count; MoveNum++) {
 		PickNextMove(MoveNum, list);
 
 		if (!MakeMove(pos,list->moves[MoveNum].move))  {
@@ -216,40 +225,51 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 			return 0;
 		}
 
-		if (Score > alpha) {
-			if (Score >= beta) {
-				if(Legal==1) {
-					info->fhf++;
-				}
-				info->fh++;
-
-				//if its not a capture that cuts off a beta, its a killer move
-				if(!(list->moves[MoveNum].move & MFLAGCAP)) {
-					pos->searchKillers[1][pos->ply] =
-												pos->searchKillers[0][pos->ply];
-					pos->searchKillers[0][pos->ply] = list->moves[MoveNum].move;
-				}
-				return beta;
-			}
-			alpha = Score;
+		if( Score > bestScore ) {
+			bestScore = Score;
 			BestMove = list->moves[MoveNum].move;
 
-			if(!(list->moves[MoveNum].move & MFLAGCAP)) {
-				pos->searchHistory[pos->pieces[FROM(BestMove)]][TO(BestMove)] += depth;
+			if (Score > alpha) {
+				if (Score >= beta) {
+
+					if(Legal==1) {
+						info->fhf++;
+					}
+					info->fh++;
+
+					//if its not a capture that cuts off a beta, its a killer move
+					if(!(list->moves[MoveNum].move & MFLAGCAP)) {
+						pos->searchKillers[1][pos->ply] =
+							pos->searchKillers[0][pos->ply];
+						pos->searchKillers[0][pos->ply] = list->moves[MoveNum].move;
+					}
+
+					StoreHashEntry(pos, BestMove, beta, HFBETA, depth);
+
+					return beta;
+				}
+				alpha = Score;
+
+				if(!(list->moves[MoveNum].move & MFLAGCAP)) {
+					pos->searchHistory[pos->pieces[FROM(BestMove)]][TO(BestMove)] += depth;
+				}
 			}
 		}
 	}
 
 	if (Legal == 0) {
 		if (InCheck == TRUE) {
-			return -MATE + pos->ply;
+			return -INFINITE + pos->ply;
 		} else {
 			return 0;
 		}
 	}
 
 	if (alpha != OldAlpha) {
-		StorePvMove(pos, BestMove);
+		StoreHashEntry(pos, BestMove, bestScore, HFEXACT, depth);
+		//StorePvMove(pos, BestMove);
+	} else {
+		StoreHashEntry(pos, BestMove, alpha, HFALPHA, depth);
 	}
 
 	return alpha;

@@ -25,7 +25,8 @@ int main () {
 
 	S_BOARD pos[1];
 	S_SEARCHINFO info[1];
-	InitPvTable(pos->PvTable);
+	info->quit = FALSE;
+	InitHashTable(pos->HashTable);
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
 	
@@ -62,5 +63,5 @@ int main () {
 		}
 	}
 
-	free(pos->PvTable->pTable);
+	free(pos->HashTable->pTable);
 }
