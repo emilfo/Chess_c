@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-//#define DEBUG
+#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -33,6 +33,9 @@ typedef uint64_t U64;
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 #define NOMOVE 0
+
+#define INFINITE 30000
+#define ISMATE (INFINITE - MAXDEPTH)
 
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
@@ -65,15 +68,23 @@ typedef struct {
 	int count;
 }S_MOVELIST;
 
+enum { HFNONE, HFALPHA, HFBETA, HFEXACT };
 typedef struct {
 	U64 posKey;
 	int move;
-} S_PVENTRY;
+	int score;
+	int depth;
+	int flag;
+} S_HASHENTRY;
 
 typedef struct {
-	S_PVENTRY *pTable;
+	S_HASHENTRY *pTable;
 	int numEntries;
-} S_PVTABLE;
+	int newWrite;
+	int overWrite;
+	int hit;
+	int cut;
+} S_HASHTABLE;
 
 typedef struct
 {
@@ -114,7 +125,7 @@ typedef struct
 	//piece list
 	int pList[13][10];
 
-	S_PVTABLE PvTable[1];
+	S_HASHTABLE HashTable[1];
 	int PvArray[MAXDEPTH];
 
 	int searchHistory[13][BRD_SQ_NUM];
@@ -196,6 +207,7 @@ extern U64 ClearMask[64];
 extern U64 PieceKeys[13][BRD_SQ_NUM];
 extern U64 SideKey;
 extern U64 CastleKeys[16];
+
 extern char PceChar[];
 extern char SideChar[];
 extern char RankChar[];
@@ -272,6 +284,8 @@ extern void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list);
 //makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
+extern void MakeNullMove(S_BOARD *pos);
+extern void TakeNullMove(S_BOARD *pos);
 
 //perft.c
 extern U64 Perft(int depth, S_BOARD *pos);
@@ -285,9 +299,11 @@ extern long GetTimeMs();
 extern void ReadInput(S_SEARCHINFO *info);
 
 //pvtable.c
-extern void InitPvTable(S_PVTABLE *table);
-extern void StorePvMove(const S_BOARD *pos, const int move);
-extern int ProbePvTable(const S_BOARD *pos);
+extern void InitHashTable(S_HASHTABLE *table);
+extern void StoreHashEntry(S_BOARD *pos, const int move, int score, const int flags, const int depth);
+extern int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int depth);
+extern int ProbePvMove(const S_BOARD *pos);
+extern int GetPvLine(const int depth, S_BOARD *pos);
 
 //evaluate.c
 extern int EvalPosition(const S_BOARD *pos);
