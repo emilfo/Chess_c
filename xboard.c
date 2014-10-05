@@ -44,11 +44,14 @@ int checkresult(S_BOARD *pos) {
       
     int MoveNum = 0;
 	int found = 0;
-	for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {	
+	for(MoveNum = 0; MoveNum < list->count; MoveNum++) {
+		printf("Trying move %s", printMove(list->moves[MoveNum].move));
        
         if ( !MakeMove(pos,list->moves[MoveNum].move))  {
+			printf(" <- not found");
             continue;
         }
+		printf(" <- found");
         found++;
 		TakeMove(pos);
 		break;
@@ -61,13 +64,13 @@ int checkresult(S_BOARD *pos) {
 	int InCheck = SqAttacked(pos->kingSQ[pos->side],pos->side^1,pos);
 	
 	if(InCheck == TRUE)	{
-	    if(pos->side == WHITE) {
-	      printf("0-1 {black mates (claimed by ELOmif)}\n");return TRUE;
-        } else {
-	      printf("0-1 {white mates (claimed by ELOmif)}\n");return TRUE;
+		if(pos->side == WHITE) {
+			printf("0-1 {black mates (claimed by ELOmif)}\n");return TRUE;
+		} else {
+			printf("0-1 {white mates (claimed by ELOmif)}\n");return TRUE;
         }
     } else {
-      printf("\n1/2-1/2 {stalemate (claimed by ELOmif)}\n");return TRUE;
+		printf("\n1/2-1/2 {stalemate (claimed by ELOmif)}\n");return TRUE;
     }	
 	return FALSE;	
 }

@@ -22,7 +22,7 @@
 
 int main () {
 	S_BOARD pos[1];
-	//pos->HashTable->pTable = NULL;
+	pos->HashTable->pTable = NULL;
 
 	S_SEARCHINFO info[1];
 	info->quit = FALSE;
