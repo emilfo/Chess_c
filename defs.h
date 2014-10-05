@@ -293,7 +293,7 @@ extern void perftSuiteTest();
 
 //search.c
 extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
-extern static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info);
+extern void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info);
 
 //misc.c
 extern long GetTimeMs();
@@ -314,6 +314,6 @@ extern void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info);
 
 //xboard.c
 extern void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info);
-extern void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info)
+extern void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info);
 
 #endif

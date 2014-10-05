@@ -25,7 +25,7 @@ int DrawMaterial(const S_BOARD *pos) {
     return TRUE;
 }
 
-int checkresult(S_BOARD *pos, S_SEARCHINFO *info) {
+int checkresult(S_BOARD *pos) {
 
     if (pos->fiftyMove > 100) {
      printf("1/2-1/2 {fifty move rule (claimed by ELOmif)}\n"); return TRUE;
@@ -106,7 +106,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
 		fflush(stdout);
 
-		if(pos->side == engineSide && checkresult(pos, info) == FALSE) {  
+		if(pos->side == engineSide && checkresult(pos) == FALSE) {  
 			info->starttime = GetTimeMs();
 			info->depth = depth;
 			
@@ -228,7 +228,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			move = ParseMove(inBuf+9, pos);	
 			if(move == NOMOVE) continue;
 			MakeMove(pos, move);
-            pos->ply=0;http://steamcommunity.com/sharedfiles/filedetails/?id=320527789
+            pos->ply=0;
 		}    
     }	
 }

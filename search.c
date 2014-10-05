@@ -41,7 +41,7 @@ static int IsRepetition(const S_BOARD *pos) {
 	return FALSE;
 }
 
-static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
+void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 	int i, j;
 
 	for (i = 0; i < 13; i++) {
