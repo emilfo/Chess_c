@@ -33,10 +33,10 @@ int main () {
 	InitHashTable(pos->HashTable);
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
-	
-	
+
+
 	printf("Welcome to ELOmif chess engine! Type 'console' to play in console mode...\n");
-	
+
 	char line[256];
 	while (TRUE) {
 		memset(&line[0], 0, sizeof(line));
@@ -46,7 +46,7 @@ int main () {
 			continue;
 		if (line[0] == '\n')
 			continue;
-		if (!strncmp(line, "uci",3)) {			
+		if (!strncmp(line, "uci",3)) {
 			Uci_Loop(pos, info);
 			if(info->quit == TRUE) break;
 			continue;

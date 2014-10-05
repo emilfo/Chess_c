@@ -47,7 +47,7 @@ void ClearHashTable(S_HASHTABLE *table) {
 
 void InitHashTable(S_HASHTABLE *table) {
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
-    table->numEntries -= 2;
+    table->numEntries -= 4;
 	
     if (table->pTable) free(table->pTable);
 
