@@ -37,6 +37,8 @@ typedef uint64_t U64;
 #define INFINITE 30000
 #define ISMATE (INFINITE - MAXDEPTH)
 
+#define STANDARD_HASHSIZE  (0x100000*16)
+
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
 enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE, };
@@ -125,11 +127,12 @@ typedef struct
 	//piece list
 	int pList[13][10];
 
-	S_HASHTABLE HashTable[1];
 	int PvArray[MAXDEPTH];
 
 	int searchHistory[13][BRD_SQ_NUM];
 	int searchKillers[2][MAXDEPTH];
+
+	S_HASHTABLE HashTable[1];
 
 } S_BOARD;
 
@@ -300,7 +303,7 @@ extern unsigned long GetTimeMs();
 extern void ReadInput(S_SEARCHINFO *info);
 
 //pvtable.c
-extern void InitHashTable(S_HASHTABLE *table);
+extern void InitHashTable(S_HASHTABLE *table, int size);
 extern void StoreHashEntry(S_BOARD *pos, const int move, int score, const int flags, const int depth);
 extern int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int depth);
 extern int ProbePvMove(const S_BOARD *pos);

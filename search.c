@@ -100,7 +100,7 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 	int MoveNum = 0;
 	int Legal = 0;
 	//int OldAlpha = alpha;
-	int BestMove = NOMOVE;
+	//int BestMove = NOMOVE;
 	Score = -INFINITE;
 	//int PvMove = ProbePvTable(pos);
 
@@ -128,7 +128,7 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 				return beta;
 			}
 			alpha = Score;
-			BestMove = list->moves[MoveNum].move;
+			//BestMove = list->moves[MoveNum].move;
 		}
 	}
 /*
@@ -146,7 +146,6 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 		int tmpScore = Quiescence(alpha, beta, pos, info);
 		ASSERT(tmpScore>=-INFINITE && tmpScore<=INFINITE);
 		return tmpScore;
-		//return EvalPosition(pos);
 	}
 
 	//Checks if time is up for every 2048 node we check
@@ -173,13 +172,13 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 
 	int Score = -30000;
 	int PvMove = NOMOVE;
-
+/*
 	if( ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE ) {
 		pos->HashTable->cut++;
 		ASSERT(Score>=-INFINITE && Score<=INFINITE);
 		return Score;
 	}
-
+*/
 	if( DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 0) && depth >= 4) {
 		MakeNullMove(pos);
 		Score = -AlphaBeta(-beta, -beta + 1, depth-4, pos, info, FALSE);
@@ -319,7 +318,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 					info->nodes);
 		}
 		else if (info->POST_THINKING == TRUE) {
-			printf ("score:%d depth:%d nodes:%ld time:%ld(ms)",
+			printf ("score:%d depth:%d nodes:%ld time:%ld(ms) ",
 					bestScore, currentDepth, info->nodes, GetTimeMs()-info->starttime);
 		}
 
