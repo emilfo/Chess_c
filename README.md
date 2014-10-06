@@ -6,9 +6,11 @@ http://www.youtube.com/watch?v=bGAfaepBco4
 
 
 How to run:
-compile using make
+-----------
+- Compile using make
 
-run ELOmif in the terminal or upload into a chessGUI supporting UCI or Winboard.
+- Run ELOmif in the terminal or upload into a chessGUI supporting UCI or Winboard.
 
 disclaimer:
+-----------
 This program is a working projects and bugs and crashes will happen
