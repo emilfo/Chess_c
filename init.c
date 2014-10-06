@@ -177,7 +177,7 @@ void InitSQ120toSQ64 () {
 }
 void InitPos(S_BOARD *pos) {
 	pos->HashTable->pTable = NULL;
-	InitHashTable(pos->HashTable);
+	InitHashTable(pos->HashTable, STANDARD_HASHSIZE);
 }
 
 void AllInit (S_BOARD *pos) {

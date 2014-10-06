@@ -1,8 +1,6 @@
 #include "stdio.h"
 #include "defs.h"
 
-//16 megabytes of size, should be set by gui
-const int HashSize = 0x100000 * 10;
 
 int GetPvLine(const int depth, S_BOARD *pos) {
 	ASSERT(depth < MAXDEPTH);
@@ -45,13 +43,18 @@ void ClearHashTable(S_HASHTABLE *table) {
 	table->newWrite = 0;
 }
 
-void InitHashTable(S_HASHTABLE *table) {
-    table->numEntries = HashSize / sizeof(S_HASHENTRY);
-    table->numEntries -= 2;
+void InitHashTable(S_HASHTABLE *table, int size) {
+    table->numEntries = size / sizeof(S_HASHENTRY);
+    //table->numEntries -= 2;
 	
     if (table->pTable) free(table->pTable);
 
     table->pTable = (S_HASHENTRY *) malloc(table->numEntries * sizeof(S_HASHENTRY));
+	if (table->pTable == NULL) {
+		printf("malloc with size:%d(MB) failed, trying half\n", size/100000);
+		InitHashTable(table, size/2);
+		return;
+	}
     ClearHashTable(table);
     printf("HashTable init complete with %d entries\n",table->numEntries);
 }
