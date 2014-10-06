@@ -317,7 +317,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 					info->nodes);
 		}
 		else if (info->POST_THINKING == TRUE) {
-			printf ("score:%d depth:%d nodes:%ld time:%ld(ms)",
+			printf ("score:%d depth:%d nodes:%ld time:%ld(ms) ",
 					bestScore, currentDepth, info->nodes, GetTimeMs()-info->starttime);
 		}
 

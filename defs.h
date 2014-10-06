@@ -127,11 +127,12 @@ typedef struct
 	//piece list
 	int pList[13][10];
 
-	S_HASHTABLE HashTable[1];
 	int PvArray[MAXDEPTH];
 
 	int searchHistory[13][BRD_SQ_NUM];
 	int searchKillers[2][MAXDEPTH];
+
+	S_HASHTABLE HashTable[1];
 
 } S_BOARD;
 
