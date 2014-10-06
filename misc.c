@@ -5,10 +5,11 @@
 #ifdef WIN32
 #include "windows.h"
 #else
-#include "time.h"
+#include <sys/time.h>
+#include <unistd.h>
 #endif
 
-long GetTimeMs() {
+unsigned long GetTimeMs() {
 #ifdef WIN32
   return GetTickCount();
 #else
@@ -58,10 +59,10 @@ void ReadInput(S_SEARCHINFO *info) {
   int             bytes;
   char            input[256] = "", *endc;
 
-    if (InputWaiting()) {    
+    if (InputWaiting()) {
 		info->stopped = TRUE;
 		do {
-		  bytes=read(fileno(stdin),input,256);
+		  bytes = read(fileno(stdin), input, 256);
 		} while (bytes<0);
 		endc = strchr(input,'\n');
 		if (endc) *endc=0;

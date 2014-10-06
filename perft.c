@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdint.h"
+#include <inttypes.h>
 
 
 U64 Perft(int depth, S_BOARD *pos) {
@@ -65,7 +66,7 @@ void perftSuiteTest() {
 	 		perftResult = Perft(depth, board);
 
 	 		if(nodes != perftResult) {
-	 			printf("\nERROR: expected %I64d\nresult   %I64d \ndepth %d\n", nodes, perftResult, depth);
+	 			printf("\nERROR: expected %"PRIu64"\nresult %"PRIu64"\ndepth %d\n", nodes, perftResult, depth);
 	 		}
 	 		else {
 	 			printf(" ok\n");

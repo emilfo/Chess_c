@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "defs.h"
+#include <inttypes.h>
 
 //Debug method to check if listmaterial is updated correctly
 int checkBoard(const S_BOARD *pos) {   
@@ -313,5 +314,5 @@ void printBoard (const S_BOARD *pos) {
 			pos->castlePerm & BKCA ? 'k' : '-',
 			pos->castlePerm & BQCA ? 'q' : '-');
 
-	printf("posKey: %11X\n", pos ->posKey);
+	printf("posKey: %"PRIu64"\n", pos->posKey);
 }

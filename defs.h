@@ -4,7 +4,7 @@
 #include "stdint.h"
 #include "stdlib.h"
 
-#define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -78,12 +78,12 @@ typedef struct {
 } S_HASHENTRY;
 
 typedef struct {
-	S_HASHENTRY *pTable;
 	int numEntries;
 	int newWrite;
 	int overWrite;
 	int hit;
 	int cut;
+	S_HASHENTRY *pTable;
 } S_HASHTABLE;
 
 typedef struct
@@ -137,8 +137,8 @@ typedef struct
 typedef struct
 {
 	//various info on when to stop searching
-	int starttime;
-	int stoptime;
+	unsigned long starttime;
+	unsigned long stoptime;
 	int depth;
 	int depthset;
 	int timeset;
@@ -276,7 +276,7 @@ extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
 //movegen.c
-extern int InitMvvLva();
+extern void InitMvvLva();
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern int MoveExists(S_BOARD *pos, const int move);
 extern void GenerateAllCaps(const S_BOARD *pos, S_MOVELIST *list);
@@ -296,7 +296,7 @@ extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
 extern void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info);
 
 //misc.c
-extern long GetTimeMs();
+extern unsigned long GetTimeMs();
 extern void ReadInput(S_SEARCHINFO *info);
 
 //pvtable.c

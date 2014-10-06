@@ -2,7 +2,7 @@
 #include "defs.h"
 
 //16 megabytes of size, should be set by gui
-const int HashSize = 0x100000 * 16;
+const int HashSize = 0x100000 * 10;
 
 int GetPvLine(const int depth, S_BOARD *pos) {
 	ASSERT(depth < MAXDEPTH);
@@ -31,23 +31,23 @@ int GetPvLine(const int depth, S_BOARD *pos) {
 }
 
 void ClearHashTable(S_HASHTABLE *table) {
+	int i;
+	S_HASHENTRY *tableEntry = table->pTable;
 
-  S_HASHENTRY *tableEntry;
-
-  for (tableEntry = table->pTable; tableEntry < (table->pTable +
-			  table->numEntries); tableEntry++) {
-    tableEntry->posKey = ZERO64;
-    tableEntry->move = NOMOVE;
-	tableEntry->depth = 0;
-	tableEntry->score = 0;
-	tableEntry->flag = 0;
-  }
-  table->newWrite = 0;
+	for (i = 0; i < table->numEntries; i++) {
+		tableEntry->posKey = ZERO64;
+		tableEntry->move = NOMOVE;
+		tableEntry->depth = 0;
+		tableEntry->score = 0;
+		tableEntry->flag = 0;
+		tableEntry++;
+	}
+	table->newWrite = 0;
 }
 
 void InitHashTable(S_HASHTABLE *table) {
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
-    table->numEntries -= 4;
+    table->numEntries -= 2;
 	
     if (table->pTable) free(table->pTable);
 
@@ -78,6 +78,7 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
 					&& pos->HashTable->pTable[index].flag <= HFEXACT);
 		
 			*score = pos->HashTable->pTable[index].score;
+			//reset the mate score
 			if (*score > ISMATE) {
 				score -= pos->ply;
 			} else if (*score < -ISMATE) {
@@ -85,6 +86,9 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
 			}
 
 			switch (pos->HashTable->pTable[index].flag) {
+				ASSERT(*score>=-INFINITE && *score<=INFINITE);
+				ASSERT(alpha>=-INFINITE && alpha<=INFINITE);
+				ASSERT(beta>=-INFINITE && beta<=INFINITE);
 				case HFALPHA: 
 					if(*score <= alpha) {
 						*score = alpha;

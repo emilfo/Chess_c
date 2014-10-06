@@ -61,7 +61,7 @@ void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info) {
 	pos->HashTable->cut = 0;
 	pos->ply = 0;
 
-	info->stopped = 0;
+	info->stopped = FALSE;
 	info->nodes = 0;
 	info->fh = 0;
 	info->fhf = 0;
@@ -99,7 +99,7 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 
 	int MoveNum = 0;
 	int Legal = 0;
-	int OldAlpha = alpha;
+	//int OldAlpha = alpha;
 	int BestMove = NOMOVE;
 	Score = -INFINITE;
 	//int PvMove = ProbePvTable(pos);
@@ -139,13 +139,13 @@ static int Quiescence(int alpha, int beta, S_BOARD *pos, S_SEARCHINFO *info) {
 	return alpha;
 }
 
-static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
-											S_SEARCHINFO *info, int DoNull) {
+static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO *info, int DoNull) {
 	ASSERT(checkBoard(pos));
-
 	if(depth == 0) {
 		info->nodes++;
-		return Quiescence(alpha, beta, pos, info);
+		int tmpScore = Quiescence(alpha, beta, pos, info);
+		ASSERT(tmpScore>=-INFINITE && tmpScore<=INFINITE);
+		return tmpScore;
 		//return EvalPosition(pos);
 	}
 
@@ -161,7 +161,9 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 	}
 
 	if(pos->ply > MAXDEPTH - 1) {
-		return EvalPosition(pos);
+		int tmpScore = EvalPosition(pos);
+		ASSERT(tmpScore>=-INFINITE && tmpScore<=INFINITE);
+		return tmpScore;
 	}
 
 	int InCheck = SqAttacked(pos->kingSQ[pos->side], pos->side^1, pos);
@@ -171,8 +173,10 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 
 	int Score = -INFINITE;
 	int PvMove = NOMOVE;
+
 	if( ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE ) {
 		pos->HashTable->cut++;
+		ASSERT(Score>=-INFINITE && Score<=INFINITE);
 		return Score;
 	}
 
@@ -186,6 +190,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		}
 
 		if(Score >= beta && abs(Score) < ISMATE) {
+			ASSERT(beta>=-INFINITE && beta<=INFINITE);
 			return beta;
 		}
 	}
@@ -218,6 +223,11 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		}
 
 		Legal++;
+		ASSERT(beta <= INFINITE);
+		ASSERT(alpha <= INFINITE);
+		ASSERT(depth >= 1);
+		ASSERT(checkBoard(pos));
+		ASSERT(info->nodes >= 0);
 		Score = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);
 		TakeMove(pos);
 
@@ -246,6 +256,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 
 					StoreHashEntry(pos, BestMove, beta, HFBETA, depth);
 
+					ASSERT(beta>=-INFINITE && beta<=INFINITE);
 					return beta;
 				}
 				alpha = Score;
@@ -259,6 +270,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 
 	if (Legal == 0) {
 		if (InCheck == TRUE) {
+			ASSERT((-INFINITE + pos->ply) >=-INFINITE && (-INFINITE + pos->ply)<=INFINITE);
 			return -INFINITE + pos->ply;
 		} else {
 			return 0;
@@ -272,6 +284,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos,
 		StoreHashEntry(pos, BestMove, alpha, HFALPHA, depth);
 	}
 
+	ASSERT(alpha>=-INFINITE && alpha<=INFINITE);
 	return alpha;
 }
 
@@ -286,8 +299,8 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 
 	//iterative deepening, calling alphabeta for every depth
 	for (currentDepth = 1; currentDepth <= info->depth; currentDepth++) {
-		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info,
-																		TRUE);
+		bestScore = AlphaBeta(-INFINITE, INFINITE, currentDepth, pos, info, TRUE);
+
 		if(info->stopped == TRUE) {
 			break;
 		}
@@ -296,16 +309,16 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 		bestMove = pos->PvArray[0];
 
 		if (info->GAME_MODE == UCIMODE) {
-			printf("info score cp %d depth %d nodes %ld time %d ",
-				bestScore, currentDepth, info->nodes, GetTimeMs() - info->starttime);
+			printf("info score cp %d depth %d nodes %ld time %ld ",
+				bestScore, currentDepth, info->nodes, (GetTimeMs() - info->starttime));
 		}
 		else if (info->GAME_MODE == XBOARDMODE && info->POST_THINKING == TRUE) {
-			printf("%d %d %d %ld ",
+			printf("%d %d %ld %ld ",
 					currentDepth, bestScore, (GetTimeMs()-info->starttime)/10,
 					info->nodes);
 		}
 		else if (info->POST_THINKING == TRUE) {
-			printf ("score:%d depth:%d nodes:%ld time:%d(ms)",
+			printf ("score:%d depth:%d nodes:%ld time:%ld(ms)",
 					bestScore, currentDepth, info->nodes, GetTimeMs()-info->starttime);
 		}
 

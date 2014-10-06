@@ -26,13 +26,16 @@ int SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 	//knight attacks
 	for(i = 0; i < 8; i++) {
 		piece = pos->pieces[ sq + KnDir[i] ];
-		if(IsKn(piece) && PieceColor[piece]==side) return TRUE;
+		if(piece != OFFBOARD && IsKn(piece) && PieceColor[piece]==side) return TRUE;
 	}
 
+	
 	//king attacks
 	for(i = 0; i < 8; i++) {
 		piece = pos->pieces[ sq + KiDir[i] ];
-		if(IsKi(piece) && PieceColor[piece]==side) return TRUE;
+		if(piece != OFFBOARD && IsKi(piece) && PieceColor[piece]==side)  {
+			return TRUE;
+		}
 	}
 
 	//rook and Queen attacks
@@ -43,7 +46,7 @@ int SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 
 		while(piece != OFFBOARD) {
 			if(piece != EMPTY) {
-				if(IsRQ(piece) && PieceColor[piece] == side) return TRUE;
+				if(piece != OFFBOARD && IsRQ(piece) && PieceColor[piece] == side) return TRUE;
 				break;
 			}
 
@@ -60,7 +63,7 @@ int SqAttacked(const int sq, const int side, const S_BOARD *pos) {
 
 		while(piece != OFFBOARD) {
 			if(piece != EMPTY) {
-				if(IsBQ(piece) && PieceColor[piece] == side) return TRUE;
+				if(piece != OFFBOARD && IsBQ(piece) && PieceColor[piece] == side) return TRUE;
 				break;
 			}
 

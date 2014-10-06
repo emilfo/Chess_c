@@ -78,8 +78,6 @@ static void AddPiece(const int sq, S_BOARD *pos, const int piece) {
 	ASSERT(SqOnBoard(sq));
 
 	int color = PieceColor[piece];
-	int i = 0;
-	int targetPceNum = -1;
 
 	//adds piece to posKey
 	HASH_PCE(piece,sq);

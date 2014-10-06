@@ -21,7 +21,7 @@ int DrawMaterial(const S_BOARD *pos) {
     if (pos->pceNum[wN] > 1 || pos->pceNum[bN] > 1) {return FALSE;}
     if (pos->pceNum[wN] && pos->pceNum[wB]) {return FALSE;}
     if (pos->pceNum[bN] && pos->pceNum[bB]) {return FALSE;}
-	
+
     return TRUE;
 }
 
@@ -34,35 +34,32 @@ int checkresult(S_BOARD *pos) {
     if (ThreeFoldRep(pos) >= 2) {
      printf("1/2-1/2 {3-fold repetition (claimed by ELOmif)}\n"); return TRUE;
     }
-	
+
 	if (DrawMaterial(pos) == TRUE) {
      printf("1/2-1/2 {insufficient material (claimed by ELOmif)}\n"); return TRUE;
     }
 
 	S_MOVELIST list[1];
     GenerateAllMoves(pos,list);
-      
+
     int MoveNum = 0;
 	int found = 0;
 	for(MoveNum = 0; MoveNum < list->count; MoveNum++) {
-		printf("Trying move %s", printMove(list->moves[MoveNum].move));
-       
-        if ( !MakeMove(pos,list->moves[MoveNum].move))  {
-			printf(" <- not found");
+
+        if ( !MakeMove(pos, list->moves[MoveNum].move))  {
             continue;
         }
-		printf(" <- found");
         found++;
 		TakeMove(pos);
 		break;
     }
-	
+
 	if(found != 0) return FALSE;
-	
+
 	if(found != 0) return FALSE;
 
 	int InCheck = SqAttacked(pos->kingSQ[pos->side],pos->side^1,pos);
-	
+
 	if(InCheck == TRUE)	{
 		if(pos->side == WHITE) {
 			printf("0-1 {black mates (claimed by ELOmif)}\n");return TRUE;
@@ -71,12 +68,12 @@ int checkresult(S_BOARD *pos) {
         }
     } else {
 		printf("\n1/2-1/2 {stalemate (claimed by ELOmif)}\n");return TRUE;
-    }	
-	return FALSE;	
+    }
+	return FALSE;
 }
 
 void PrintOptions() {
-	printf("feature ping=1 setboard=1 colors=0 usermove=1\n");      
+	printf("feature ping=1 setboard=1 colors=0 usermove=1\n");
 	printf("feature done=1\n");
 }
 
@@ -87,100 +84,99 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
 	PrintOptions(); // HACK
-	
+
 	int depth = -1, movestogo[2] = {30,30 }, movetime = -1;
-	int time = -1, inc = 0;                             
-	int engineSide = BOTH;                    
-	int timeLeft;   
+	int time = -1, inc = 0;
+	int engineSide = BOTH;
+	int timeLeft;
 	int sec;
 	int mps;
-	int move = NOMOVE;	
-	int i, score;
-	char inBuf[80], command[80];	
-	
-	engineSide = BLACK; 
-	parseFEN(START_FEN, pos);
-	depth = -1; 
-	time = -1;
-	
-	ClearForSearch(pos, info);	
+	int move = NOMOVE;
+	char inBuf[80], command[80];
 
-	while(TRUE) { 
+	engineSide = BLACK;
+	parseFEN(START_FEN, pos);
+	depth = -1;
+	time = -1;
+
+	ClearForSearch(pos, info);
+
+	while(TRUE) {
 
 		fflush(stdout);
 
-		if(pos->side == engineSide && checkresult(pos) == FALSE) {  
+		if(pos->side == engineSide && checkresult(pos) == FALSE) {
 			info->starttime = GetTimeMs();
 			info->depth = depth;
-			
+
 			if(time != -1) {
 				info->timeset = TRUE;
 				time /= movestogo[pos->side];
-				time -= 50;		
+				time -= 50;
 				info->stoptime = info->starttime + time + inc;
-			} 
-	
+			}
+
 			if(depth == -1 || depth > MAXDEPTH) {
 				info->depth = MAXDEPTH;
 			}
-		
-			printf("time:%d start:%d stop:%d depth:%d timeset:%d movestogo:%d mps:%d\n",
+
+			printf("time:%d start:%lu stop:%lu depth:%d timeset:%d movestogo:%d mps:%d\n",
 				time,info->starttime,info->stoptime,info->depth,info->timeset, movestogo[pos->side], mps);
 				SearchPosition(pos, info);
-			
+
 			if(mps != 0) {
 				movestogo[pos->side^1]--;
 				if(movestogo[pos->side^1] < 1) {
 					movestogo[pos->side^1] = mps;
 				}
 			}
-			
-		}	
 
-		fflush(stdout); 
-	
+		}
+
+		fflush(stdout);
+
 		memset(&inBuf[0], 0, sizeof(inBuf));
 		fflush(stdout);
 		if (!fgets(inBuf, 80, stdin))
 		continue;
-    
+
 		sscanf(inBuf, "%s", command);
-		
+
 		printf("command seen:%s\n",inBuf);
-    
-		if(!strcmp(command, "quit")) { 
+
+		if(!strcmp(command, "quit")) {
 			info->quit = TRUE;
-			break; 
+			break;
 		}
-		
-		if(!strcmp(command, "force")) { 
-			engineSide = BOTH; 
-			continue; 
-		} 
-		
+
+		if(!strcmp(command, "force")) {
+			engineSide = BOTH;
+			continue;
+		}
+
 		if(!strcmp(command, "protover")){
 			PrintOptions();
 		    continue;
 		}
-		
+
 		if(!strcmp(command, "sd")) {
-			sscanf(inBuf, "sd %d", &depth); 
+			sscanf(inBuf, "sd %d", &depth);
 		    printf("DEBUG depth:%d\n",depth);
-			continue; 
+			continue;
 		}
-		
+
 		if(!strcmp(command, "st")) {
-			sscanf(inBuf, "st %d", &movetime); 
+			sscanf(inBuf, "st %d", &movetime);
 		    printf("DEBUG movetime:%d\n",movetime);
-			continue; 
-		}  
-		
+			continue;
+		}
+
 		if(!strcmp(command, "time")) {
-			sscanf(inBuf, "time %d", &time); 
+			sscanf(inBuf, "time %d", &time);
 			time *= 10;
 		    printf("DEBUG time:%d\n",time);
-			continue; 
-		}  
+			continue;
+		}
 
 		if(!strcmp(command, "level")) {
 			sec = 0;
@@ -190,7 +186,7 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 		      printf("DEBUG level with :\n");
 			}	else {
 		      printf("DEBUG level without :\n");
-			}			
+			}
 			timeLeft *= 60000;
 			timeLeft += sec * 1000;
 			movestogo[0] = movestogo[1] = 30;
@@ -199,41 +195,41 @@ void XBoard_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			}
 			time = -1;
 		    printf("DEBUG level timeLeft:%d movesToGo:%d inc:%d mps%d\n",timeLeft,movestogo[0],inc,mps);
-			continue; 
-		}  		
-		
-		if(!strcmp(command, "ping")) { 
-			printf("pong%s\n", inBuf+4); 
-			continue; 
+			continue;
 		}
-		
-		if(!strcmp(command, "new")) { 
-			engineSide = BLACK; 
+
+		if(!strcmp(command, "ping")) {
+			printf("pong%s\n", inBuf+4);
+			continue;
+		}
+
+		if(!strcmp(command, "new")) {
+			engineSide = BLACK;
 			parseFEN(START_FEN, pos);
-			depth = -1; 
+			depth = -1;
 			time = -1;
-			continue; 
+			continue;
 		}
-		
+
 		if(!strcmp(command, "setboard")){
-			engineSide = BOTH;  
-			parseFEN(inBuf+9, pos); 
-			continue; 
-		}   		
-		
-		if(!strcmp(command, "go")) { 
-			engineSide = pos->side;  
-			continue; 
-		}		
-		  
+			engineSide = BOTH;
+			parseFEN(inBuf+9, pos);
+			continue;
+		}
+
+		if(!strcmp(command, "go")) {
+			engineSide = pos->side;
+			continue;
+		}
+
 		if(!strcmp(command, "usermove")){
 			movestogo[pos->side]--;
-			move = ParseMove(inBuf+9, pos);	
+			move = ParseMove(inBuf+9, pos);
 			if(move == NOMOVE) continue;
 			MakeMove(pos, move);
             pos->ply=0;
-		}    
-    }	
+		}
+    }
 }
 
 void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
@@ -245,45 +241,46 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 	info->POST_THINKING = TRUE;
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
-	
-	int depth = MAXDEPTH, movetime = 3000;            
-	int engineSide = BOTH;    
-	int move = NOMOVE;		
-	char inBuf[80], command[80];	
-	
-	engineSide = BLACK; 
-	parseFEN(START_FEN, pos);
 
-	ClearForSearch(pos, info);	
-	
-	while(TRUE) { 
+	int depth = 10, movetime = 0;
+	info->timeset = FALSE;
+	int engineSide = BOTH;
+	int move = NOMOVE;
+	char inBuf[80], command[80];
+
+	engineSide = BLACK;
+	parseFEN("4r3/pk3ppp/1bp5/8/1P1r1P2/2nR1q1P/P2R2PK/8 w - - 0 25", pos);
+
+	ClearForSearch(pos, info);
+
+	while(TRUE) {
 
 		fflush(stdout);
 
-		if(pos->side == engineSide && checkresult(pos) == FALSE) {  
+		if(pos->side == engineSide && checkresult(pos) == FALSE) {
 			info->starttime = GetTimeMs();
 			info->depth = depth;
-			
+
 			if(movetime != 0) {
 				info->timeset = TRUE;
 				info->stoptime = info->starttime + movetime;
-			} 	
-			
+			}
+
 			SearchPosition(pos, info);
-		}	
-		
+		}
+
 		printf("\nELOmif > ");
 
-		fflush(stdout); 
-	
+		fflush(stdout);
+
 		memset(&inBuf[0], 0, sizeof(inBuf));
 		fflush(stdout);
 		if (!fgets(inBuf, 80, stdin))
 		continue;
-    
+
 		sscanf(inBuf, "%s", command);
-		
-		if(!strcmp(command, "help")) { 
+
+		if(!strcmp(command, "help")) {
 			printf("Commands:\n");
 			printf("quit - quit game\n");
 			printf("force - computer will not think\n");
@@ -300,72 +297,75 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			printf("enter moves using b7b8q notation\n\n\n");
 			continue;
 		}
-    
-		if(!strcmp(command, "quit")) { 
+
+		if(!strcmp(command, "quit")) {
 			info->quit = TRUE;
-			break; 
+			break;
 		}
-		
-		if(!strcmp(command, "post")) { 
+
+		if(!strcmp(command, "post")) {
 			info->POST_THINKING = TRUE;
-			continue; 
+			continue;
 		}
-		
-		if(!strcmp(command, "print")) { 
+
+		if(!strcmp(command, "print")) {
 			printBoard(pos);
-			continue; 
+			continue;
 		}
-		
-		if(!strcmp(command, "nopost")) { 
+
+		if(!strcmp(command, "nopost")) {
 			info->POST_THINKING = FALSE;
-			continue; 
+			continue;
 		}
-		
-		if(!strcmp(command, "force")) { 
-			engineSide = BOTH; 
-			continue; 
-		} 
-		
+
+		if(!strcmp(command, "force")) {
+			engineSide = BOTH;
+			continue;
+		}
+
 		if(!strcmp(command, "view")) {
 			if(depth == MAXDEPTH) printf("depth not set ");
 			else printf("depth %d",depth);
-			
+
 			if(movetime != 0) printf(" movetime %ds\n",movetime/1000);
 			else printf(" movetime not set\n");
-			
-			continue; 
+
+			continue;
 		}
-		
+
 		if(!strcmp(command, "depth")) {
-			sscanf(inBuf, "depth %d", &depth); 
+			sscanf(inBuf, "depth %d", &depth);
 		    if(depth==0) depth = MAXDEPTH;
-			continue; 
+			continue;
 		}
-		
+
 		if(!strcmp(command, "time")) {
-			sscanf(inBuf, "time %d", &movetime); 
+			sscanf(inBuf, "time %d", &movetime);
 			movetime *= 1000;
-			continue; 
-		} 
-		
-		if(!strcmp(command, "new")) { 
-			engineSide = BLACK; 
-			parseFEN(START_FEN, pos);
-			continue; 
+			if(movetime == 0) {
+				info->timeset = FALSE;
+			}
+			continue;
 		}
-		
-		if(!strcmp(command, "go")) { 
-			engineSide = pos->side;  
-			continue; 
-		}	
-		
+
+		if(!strcmp(command, "new")) {
+			engineSide = BLACK;
+			parseFEN(START_FEN, pos);
+			continue;
+		}
+
+		if(!strcmp(command, "go")) {
+			engineSide = pos->side;
+			continue;
+		}
+
 		if(!strcmp(command, "setboard")){
-			engineSide = BOTH;  
-			parseFEN(inBuf+9, pos); 
-			continue; 
-		}   		
-		
-		move = ParseMove(inBuf, pos);	
+			engineSide = BOTH;
+			parseFEN(inBuf+9, pos);
+			continue;
+		}
+
+		move = ParseMove(inBuf, pos);
 		if(move == NOMOVE) {
 			printf("Command unknown:%s\n",inBuf);
 			continue;
@@ -373,5 +373,5 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 
 		MakeMove(pos, move);
 		pos->ply=0;
-    }	
+    }
 }

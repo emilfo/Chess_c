@@ -122,11 +122,11 @@ int EvalPosition(const S_BOARD *pos) {
 		ASSERT(SqOnBoard(sq));
 		score += PawnTable[SQ64(sq)];
 
-		if (IsolatedMask[SQ64(sq)] & pos->pawns[WHITE] == 0) {
+		if ((IsolatedMask[SQ64(sq)] & pos->pawns[WHITE]) == 0) {
 			score += PawnIsolated;
 		}
 
-		if (WhitePassedMask[SQ64(sq)] & pos->pawns[BLACK] == 0) {
+		if ((WhitePassedMask[SQ64(sq)] & pos->pawns[BLACK]) == 0) {
 			score += PawnPassed[GetRank[sq]];
 		}
 
@@ -138,11 +138,11 @@ int EvalPosition(const S_BOARD *pos) {
 		ASSERT(SqOnBoard(sq));
 		score -= PawnTable[MIRROR64(SQ64(sq))];
 
-		if (IsolatedMask[SQ64(sq)] & pos->pawns[BLACK] == 0) {
+		if ((IsolatedMask[SQ64(sq)] & pos->pawns[BLACK]) == 0) {
 			score -= PawnIsolated;
 		}
 
-		if (WhitePassedMask[SQ64(sq)] & pos->pawns[WHITE] == 0) {
+		if ((WhitePassedMask[SQ64(sq)] & pos->pawns[WHITE]) == 0) {
 			score += PawnPassed[7 - GetRank[sq]];
 		}
 	}	
@@ -181,9 +181,9 @@ int EvalPosition(const S_BOARD *pos) {
 		ASSERT(SqOnBoard(sq));
 		score += RookTable[SQ64(sq)];
 
-		if(pos->pawns[BOTH] & FileBBMask[GetFile[sq]] == 0) {
+		if((pos->pawns[BOTH] & FileBBMask[GetFile[sq]]) == 0) {
 			score += RookOpenFile;
-		} else if (pos->pawns[WHITE] & FileBBMask[GetFile[sq]] == 0) {
+		} else if ((pos->pawns[WHITE] & FileBBMask[GetFile[sq]]) == 0) {
 			score += RookSemiOpenFile;
 		}
 	}	
@@ -194,9 +194,9 @@ int EvalPosition(const S_BOARD *pos) {
 		ASSERT(SqOnBoard(sq));
 		score -= RookTable[MIRROR64(SQ64(sq))];
 
-		if(pos->pawns[BOTH] & FileBBMask[GetFile[sq]] == 0) {
+		if((pos->pawns[BOTH] & FileBBMask[GetFile[sq]]) == 0) {
 			score -= RookOpenFile;
-		} else if (pos->pawns[BLACK] & FileBBMask[GetFile[sq]] == 0) {
+		} else if ((pos->pawns[BLACK] & FileBBMask[GetFile[sq]]) == 0) {
 			score -= RookSemiOpenFile;
 		}
 	}
@@ -206,9 +206,9 @@ int EvalPosition(const S_BOARD *pos) {
 		sq = pos->pList[pce][pceNum];
 		ASSERT(SqOnBoard(sq));
 
-		if(pos->pawns[BOTH] & FileBBMask[GetFile[sq]] == 0) {
+		if((pos->pawns[BOTH] & FileBBMask[GetFile[sq]]) == 0) {
 			score += QueenOpenFile;
-		} else if (pos->pawns[WHITE] & FileBBMask[GetFile[sq]] == 0) {
+		} else if ((pos->pawns[WHITE] & FileBBMask[GetFile[sq]]) == 0) {
 			score += QueenSemiOpenFile;
 		}
 	}
@@ -218,9 +218,9 @@ int EvalPosition(const S_BOARD *pos) {
 		sq = pos->pList[pce][pceNum];
 		ASSERT(SqOnBoard(sq));
 
-		if(pos->pawns[BOTH] & FileBBMask[GetFile[sq]] == 0) {
+		if((pos->pawns[BOTH] & FileBBMask[GetFile[sq]]) == 0) {
 			score -= QueenOpenFile;
-		} else if (pos->pawns[BLACK] & FileBBMask[GetFile[sq]] == 0) {
+		} else if ((pos->pawns[BLACK] & FileBBMask[GetFile[sq]]) == 0) {
 			score -= QueenSemiOpenFile;
 		}
 	}
