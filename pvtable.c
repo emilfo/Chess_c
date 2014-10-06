@@ -1,5 +1,6 @@
 #include "stdio.h"
 #include "defs.h"
+#include <inttypes.h>
 
 //16 megabytes of size, should be set by gui
 const int HashSize = 0x100000 * 10;
@@ -48,7 +49,7 @@ void ClearHashTable(S_HASHTABLE *table) {
 void InitHashTable(S_HASHTABLE *table) {
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
     table->numEntries -= 2;
-	
+
     if (table->pTable) free(table->pTable);
 
     table->pTable = (S_HASHENTRY *) malloc(table->numEntries * sizeof(S_HASHENTRY));
@@ -67,6 +68,7 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 
 	if (pos->HashTable->pTable[index].posKey == pos->posKey) {
+		//printf("poskey %llu\n", pos->posKey);
 		*move = pos->HashTable->pTable[index].move;
 
 		if (pos->HashTable->pTable[index].depth >= depth) {
@@ -76,31 +78,39 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
 					&& pos->HashTable->pTable[index].depth<MAXDEPTH);
 			ASSERT(pos->HashTable->pTable[index].flag >= HFALPHA
 					&& pos->HashTable->pTable[index].flag <= HFEXACT);
-		
+
 			*score = pos->HashTable->pTable[index].score;
 			//reset the mate score
 			if (*score > ISMATE) {
-				score -= pos->ply;
+				*score += pos->ply;
 			} else if (*score < -ISMATE) {
-				score += pos->ply;
+				*score -= pos->ply;
 			}
 
+			if (!(*score >= -INFINITE) && !(*score <= INFINITE)) {
+				printf("poskey:%"PRIu64", move%d, score%d, depth%d, flag%d\n", pos->HashTable->pTable[index].posKey, pos->HashTable->pTable[index].move, pos->HashTable->pTable[index].score, pos->HashTable->pTable[index].depth, pos->HashTable->pTable[index].flag);
+			}
+			//printf("score %d\n", *score);
+			ASSERT(*score>=-INFINITE && *score<=INFINITE);
+			ASSERT(alpha>=-INFINITE && alpha<=INFINITE);
+			ASSERT(beta>=-INFINITE && beta<=INFINITE);
 			switch (pos->HashTable->pTable[index].flag) {
-				ASSERT(*score>=-INFINITE && *score<=INFINITE);
-				ASSERT(alpha>=-INFINITE && alpha<=INFINITE);
-				ASSERT(beta>=-INFINITE && beta<=INFINITE);
-				case HFALPHA: 
-					if(*score <= alpha) {
-						*score = alpha;
-						return TRUE;
+				case HFALPHA:
+				if(*score > -50000) {
+					if(alpha > -50000) {
+						if(*score <= alpha) {
+							*score = alpha;
+							return TRUE;
+						}
 					}
-					break;
+				}
+				break;
 				case HFBETA:
-					if(*score >= beta) {
-						*score = beta;
-						return TRUE;
-					}
-					break;
+				if(*score >= beta) {
+					*score = beta;
+					return TRUE;
+				}
+				break;
 				case HFEXACT:
 					return TRUE;
 					break;
@@ -122,11 +132,6 @@ void StoreHashEntry(S_BOARD *pos, const int move, int score,
 
 	int index = pos->posKey % pos->HashTable->numEntries;
 
-	ASSERT(index >= 0 && index < pos->HashTable->numEntries);
-	ASSERT(depth>=1 && depth<MAXDEPTH);
-    ASSERT(flags>=HFALPHA && flags<=HFEXACT);
-    ASSERT(score>=-INFINITE && score<=INFINITE);
-    ASSERT(pos->ply >= 0 && pos->ply<MAXDEPTH);
 
 	if( pos->HashTable->pTable[index].posKey == 0 ) {
 		pos->HashTable->newWrite++;
@@ -139,12 +144,17 @@ void StoreHashEntry(S_BOARD *pos, const int move, int score,
 	} else if (score < -ISMATE) {
 		score += pos->ply;
 	}
+	ASSERT(index >= 0 && index < pos->HashTable->numEntries);
+	ASSERT(depth>=1 && depth<MAXDEPTH);
+    ASSERT(flags>=HFALPHA && flags<=HFEXACT);
+    ASSERT(pos->ply >= 0 && pos->ply<MAXDEPTH);
+    ASSERT(score>=-INFINITE && score<=INFINITE);
 
-	pos->HashTable->pTable[index].move = move;
 	pos->HashTable->pTable[index].posKey = pos->posKey;
-	pos->HashTable->pTable[index].flag = flags;
+	pos->HashTable->pTable[index].move = move;
 	pos->HashTable->pTable[index].score = score;
 	pos->HashTable->pTable[index].depth = depth;
+	pos->HashTable->pTable[index].flag = flags;
 }
 
 int ProbePvMove(const S_BOARD *pos) {

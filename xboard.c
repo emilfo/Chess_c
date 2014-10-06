@@ -249,7 +249,7 @@ void Console_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 	char inBuf[80], command[80];
 
 	engineSide = BLACK;
-	parseFEN("4r3/pk3ppp/1bp5/8/1P1r1P2/2nR1q1P/P2R2PK/8 w - - 0 25", pos);
+	parseFEN("8/2RR4/6pk/8/p2Pp3/7P/rr4P1/6K1 w - - 2 69", pos);
 
 	ClearForSearch(pos, info);
 

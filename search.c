@@ -171,7 +171,7 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 		depth++;
 	}
 
-	int Score = -INFINITE;
+	int Score = -30000;
 	int PvMove = NOMOVE;
 
 	if( ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE ) {
@@ -228,7 +228,8 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 		ASSERT(depth >= 1);
 		ASSERT(checkBoard(pos));
 		ASSERT(info->nodes >= 0);
-		Score = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);
+		int tmpScore = -AlphaBeta(-beta, -alpha, depth-1, pos, info, TRUE);
+		Score = tmpScore;
 		TakeMove(pos);
 
 		if (info->stopped == TRUE) {
