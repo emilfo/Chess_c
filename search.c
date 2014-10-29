@@ -172,13 +172,13 @@ static int AlphaBeta(int alpha, int beta, int depth, S_BOARD *pos, S_SEARCHINFO 
 
 	int Score = -30000;
 	int PvMove = NOMOVE;
-/*
+
 	if( ProbeHashEntry(pos, &PvMove, &Score, alpha, beta, depth) == TRUE ) {
 		pos->HashTable->cut++;
 		ASSERT(Score>=-INFINITE && Score<=INFINITE);
 		return Score;
 	}
-*/
+
 	if( DoNull && !InCheck && pos->ply && (pos->bigPce[pos->side] > 0) && depth >= 4) {
 		MakeNullMove(pos);
 		Score = -AlphaBeta(-beta, -beta + 1, depth-4, pos, info, FALSE);
